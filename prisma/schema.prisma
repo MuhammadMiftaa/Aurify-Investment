@@ -1,0 +1,44 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model AssetCode {
+  code      String    @id @unique
+  name      String
+  unit      String?
+  toUSD     Decimal?  @db.Decimal(18, 8)
+  toEUR     Decimal?  @db.Decimal(18, 8)
+  toIDR     Decimal?  @db.Decimal(18, 8)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("asset_codes")
+}
+
+model Investment {
+  id               String    @id @default(uuid())
+  assetCodeId      String
+  userId           String
+  quantity         Float
+  initialValuation Float
+  date             DateTime
+  description      String
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  @@index([assetCodeId])
+  @@map("investments")
+}
