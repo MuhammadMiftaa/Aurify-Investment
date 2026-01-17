@@ -24,12 +24,14 @@ model AssetCode {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  investments Investment[]
+
   @@map("asset_codes")
 }
 
 model Investment {
   id               String    @id @default(uuid())
-  assetCodeId      String
+  code             String
   userId           String
   quantity         Float
   initialValuation Float
@@ -39,6 +41,8 @@ model Investment {
   updatedAt        DateTime  @updatedAt
   deletedAt        DateTime?
 
-  @@index([assetCodeId])
+  assetCode AssetCode @relation(fields: [code], references: [code])
+
+  @@index([code])
   @@map("investments")
 }
