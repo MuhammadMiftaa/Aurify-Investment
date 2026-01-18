@@ -1,11 +1,18 @@
 import Joi from "joi";
 
-const investmentValidation = Joi.object({
+const newInvestmentValidation = Joi.object({
   code: Joi.string().required(),
   quantity: Joi.number().min(0).required(),
-  initialValuation: Joi.number().min(0).required(),
+  amount: Joi.number().min(0).required(),
   date: Joi.date().required(),
   description: Joi.string().max(500).optional(),
 });
 
-export { investmentValidation };
+const sellInvestmentValidation = Joi.object({
+  quantity: Joi.number().min(0).required(),
+  amount: Joi.number().min(0).required(),
+  date: Joi.date().required(),
+  description: Joi.string().max(500).optional(),
+});
+
+export { newInvestmentValidation, sellInvestmentValidation };

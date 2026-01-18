@@ -33,16 +33,38 @@ model Investment {
   id               String    @id @default(uuid())
   code             String
   userId           String
-  quantity         Float
-  initialValuation Float
+  quantity         Decimal   @db.Decimal(18, 8)
+  initialValuation Decimal   @db.Decimal(18, 8)
+  amount           Decimal   @db.Decimal(18, 8)
   date             DateTime
-  description      String
+  description      String?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
   deletedAt        DateTime?
 
-  assetCode AssetCode @relation(fields: [code], references: [code])
+  assetCode      AssetCode        @relation(fields: [code], references: [code])
+  investmentSold InvestmentSold[]
 
   @@index([code])
   @@map("investments")
+}
+
+model InvestmentSold {
+  id           String    @id @default(uuid())
+  investmentId String
+  userId       String
+  quantity     Decimal?  @db.Decimal(18, 8)
+  sellPrice    Decimal?  @db.Decimal(18, 8)
+  amount       Decimal   @db.Decimal(18, 8)
+  date         DateTime
+  description  String?
+  deficit      Decimal?  @db.Decimal(18, 8)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  investment Investment @relation(fields: [investmentId], references: [id])
+
+  @@index([investmentId])
+  @@map("investments_sold")
 }
