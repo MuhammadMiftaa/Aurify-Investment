@@ -1,7 +1,7 @@
 import express from "express";
 import controller from "./controller.js";
 
-const router = new express.Router();
+const router = express.Router();
 
 router.get("/investments/", controller.investmentList);
 router.get("/investments/:id", controller.investmentDetail);
