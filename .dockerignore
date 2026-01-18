@@ -1,0 +1,55 @@
+# .dockerignore
+
+# Node modules
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Generated files
+generated
+dist
+build
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Test
+test
+tests
+*.test.js
+*.spec.js
+
+# Documentation
+README.md
+docs
+*.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Misc
+.editorconfig
+.prettierrc
+.eslintrc
