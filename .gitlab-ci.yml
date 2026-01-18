@@ -61,11 +61,12 @@ deploy-staging:
         export STG_REFINA_INVESTMENT_IMAGE="$CI_REGISTRY_IMAGE/refina-investment" &&
         export STG_REFINA_INVESTMENT_IMAGE_TAG=$TAG_IMAGE &&
 
-        cd ~/web/staging/refinamicroservices
+        cd ~/web/staging/refinamicroservices &&
 
         docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
-        docker compose -f docker-compose.yml rm -f stg-refina-investment &&
-        docker compose -f docker-compose.yml stg-refina-investment up -d --build
+        docker compose -f docker-compose.yml rm -sf stg-refina-investment &&
+        docker compose -f docker-compose.yml pull stg-refina-investment &&
+        docker compose -f docker-compose.yml up -d stg-refina-investment
       "
 
 deploy-production:
@@ -87,10 +88,11 @@ deploy-production:
         export PROD_REFINA_INVESTMENT_IMAGE="$CI_REGISTRY_IMAGE/refina-investment" &&
         export PROD_REFINA_INVESTMENT_IMAGE_TAG=$TAG_IMAGE &&
 
-        cd ~/web/production/refinamicroservices
+        cd ~/web/production/refinamicroservices &&
 
         docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY &&
-        docker compose -f docker-compose.yml rm -f prod-refina-investment &&
-        docker compose -f docker-compose.yml prod-refina-investment up -d --build
+        docker compose -f docker-compose.yml rm -sf prod-refina-investment &&
+        docker compose -f docker-compose.yml pull prod-refina-investment &&
+        docker compose -f docker-compose.yml up -d prod-refina-investment
       "
   when: manual
