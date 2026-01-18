@@ -6,7 +6,6 @@ import {
 } from "./validation.js";
 
 const investmentList = (userID) => {
-  console.log("Fetching investment list for user:", userID);
   return prismaClient.investment.findMany({
     where: {
       userId: userID,
@@ -18,8 +17,20 @@ const investmentList = (userID) => {
   });
 };
 
+const investmentDetail = (userID, investmentID) => {
+  return prismaClient.investment.findUnique({
+    where: {
+      id: investmentID,
+      userId: userID,
+      deletedAt: null,
+    },
+    include: {
+      assetCode: true,
+    },
+  });
+};
+
 const investmentCreate = (userID, request) => {
-  console.log("Creating investment for user:", userID);
   const investment = validate(newInvestmentValidation, request);
 
   investment.id = generateUUID();
@@ -42,7 +53,6 @@ const investmentCreate = (userID, request) => {
 };
 
 const investmentSell = async (userID, investmentId, request) => {
-  console.log("Selling investment:", investmentId);
   const investmentSold = validate(sellInvestmentValidation, request);
 
   const investment = await prismaClient.investment.findUnique({
@@ -92,7 +102,6 @@ const investmentSell = async (userID, investmentId, request) => {
 };
 
 const assetList = () => {
-  console.log("Fetching asset list");
   return prismaClient.assetCode.findMany({
     where: {
       deletedAt: null,
@@ -112,6 +121,7 @@ const assetList = () => {
 
 export default {
   investmentList,
+  investmentDetail,
   investmentCreate,
   investmentSell,
   assetList,

@@ -17,6 +17,22 @@ const investmentList = async (req, res, next) => {
   }
 };
 
+const investmentDetail = async (req, res, next) => {
+  try {
+    const user = req.user;
+    const result = await service.investmentDetail(user.id, req.params.id);
+
+    res.status(200).json({
+      status: true,
+      statusCode: 200,
+      message: "Success retrieving investment detail",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const investmentCreate = async (req, res, next) => {
   try {
     const user = req.user;
@@ -64,6 +80,7 @@ const assetList = async (req, res, next) => {
 
 export default {
   investmentList,
+  investmentDetail,
   investmentCreate,
   investmentSell,
   assetList,

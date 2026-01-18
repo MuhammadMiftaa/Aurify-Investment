@@ -40,8 +40,6 @@ export const extractJwtClaims = (token) => {
  */
 export const extractAndVerifyJwtClaims = (token, secret) => {
   try {
-    console.log("Token:", token);
-
     // Remove "Bearer " prefix if present
     const cleanToken = token.startsWith("Bearer ") ? token.slice(7) : token;
 
