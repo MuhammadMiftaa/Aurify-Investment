@@ -1,6 +1,7 @@
 import express from "express";
 import { authMiddleware } from "./middleware.js";
 import router from "./route.js";
+import "./cron.js";
 
 const web = express();
 web.use(express.json());

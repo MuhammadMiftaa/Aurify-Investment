@@ -1,9 +1,11 @@
+import { fieldMap, MetalPriceAPI, validBaseCurrencies } from "./const.js";
 import { generateUUID } from "./helper.js";
 import { prismaClient, validate } from "./util.js";
 import {
   newInvestmentValidation,
   sellInvestmentValidation,
 } from "./validation.js";
+import https from "https";
 
 const investmentList = (userID) => {
   return prismaClient.investment.findMany({
@@ -70,7 +72,8 @@ const investmentSell = async (userID, investmentId, request) => {
   investmentSold.userId = userID;
   investmentSold.investmentId = investmentId;
   investmentSold.sellPrice = investmentSold.amount / investmentSold.quantity;
-  investmentSold.deficit = investmentSold.sellPrice - investment.initialValuation;
+  investmentSold.deficit =
+    investmentSold.sellPrice - investment.initialValuation;
 
   const [investmentSoldCreate] = await prismaClient.$transaction([
     prismaClient.investmentSold.create({
@@ -93,7 +96,9 @@ const investmentSell = async (userID, investmentId, request) => {
       },
       data: {
         quantity: investment.quantity - investmentSold.quantity,
-        amount: investment.amount - investmentSold.quantity * investment.initialValuation,
+        amount:
+          investment.amount -
+          investmentSold.quantity * investment.initialValuation,
       },
     }),
   ]);
@@ -119,10 +124,87 @@ const assetList = () => {
   });
 };
 
+const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
+  const base = baseCurrency.toUpperCase();
+
+  if (!validBaseCurrencies.includes(base)) {
+    throw new Error(
+      `Invalid base currency. Must be one of: ${validBaseCurrencies.join(", ")}`,
+    );
+  }
+
+  const response = await new Promise((resolve, reject) => {
+    const req = https.request(
+      `${MetalPriceAPI}/latest?api_key=${apiKey}&base=${base}&currencies=${currencies}`,
+      { method: "GET" },
+      (res) => {
+        let rawData = "";
+        res.on("data", (chunk) => (rawData += chunk));
+        res.on("end", () => resolve(rawData));
+      },
+    );
+
+    req.on("error", reject);
+    req.end();
+  });
+
+  const data = JSON.parse(response);
+
+  if (!data.success) {
+    throw new Error("Failed to fetch metal prices");
+  }
+
+
+  const priceField = fieldMap[base];
+  const assetUpdates = [];
+
+  for (const [key, rate] of Object.entries(data.rates)) {
+    if (
+      key.startsWith("USD") ||
+      key.startsWith("IDR") ||
+      key.startsWith("EUR")
+    ) {
+      continue;
+    }
+
+    const currencyKey = `${base}${key}`;
+    let priceInBaseCurrency = null;
+
+    if (data.rates[currencyKey]) {
+      priceInBaseCurrency = data.rates[currencyKey];
+    } else if (rate > 0) {
+      priceInBaseCurrency = 1 / rate;
+    }
+
+    if (priceInBaseCurrency > 0) {
+      assetUpdates.push(
+        prismaClient.assetCode.updateMany({
+          where: { code: key, deletedAt: null },
+          data: {
+            [priceField]: priceInBaseCurrency,
+            updatedAt: new Date(),
+          },
+        }),
+      );
+    }
+  }
+
+  if (assetUpdates.length > 0) {
+    await prismaClient.$transaction(assetUpdates);
+  }
+
+  return {
+    success: true,
+    updated: assetUpdates.length,
+    baseCurrency: base,
+  };
+};
+
 export default {
   investmentList,
   investmentDetail,
   investmentCreate,
   investmentSell,
   assetList,
+  assetRefresh,
 };

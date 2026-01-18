@@ -1,3 +1,4 @@
+import { MetalPriceAPIBasePayload, MetalPriceAPICurrencies } from "./const.js";
 import service from "./service.js";
 
 const investmentList = async (req, res, next) => {
@@ -78,10 +79,26 @@ const assetList = async (req, res, next) => {
   }
 };
 
+const assetRefresh = async (req, res, next) => {
+  try {
+    const result = await service.assetRefresh(process.env.METAL_PRICE_API_KEY, MetalPriceAPIBasePayload, MetalPriceAPICurrencies);
+
+    res.status(200).json({
+      status: true,
+      statusCode: 200,
+      message: `Success refreshing ${result.updated} asset prices to ${result.baseCurrency}`,
+      data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export default {
   investmentList,
   investmentDetail,
   investmentCreate,
   investmentSell,
   assetList,
+  assetRefresh,
 };

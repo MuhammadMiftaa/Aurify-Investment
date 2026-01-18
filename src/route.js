@@ -9,5 +9,6 @@ router.post("/investments/", controller.investmentCreate);
 router.post("/investments/:id", controller.investmentSell);
 
 router.get("/assets/", controller.assetList);
+router.get("/assets/refresh", controller.assetRefresh);
 
 export default router;
