@@ -19,7 +19,7 @@ build_refina_investment:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   script:
     - echo "Building Refina Investment Backend Application..."
-    - docker build -f ./Dockerfile.api -t "$CI_REGISTRY_IMAGE/refina-investment:$TAG_IMAGE" .
+    - docker build -f ./Dockerfile -t "$CI_REGISTRY_IMAGE/refina-investment:$TAG_IMAGE" .
     - docker push "$CI_REGISTRY_IMAGE/refina-investment:$TAG_IMAGE"
     - echo "$CI_JOB_ID" > refina-investment_build_job_id.txt
   artifacts:
