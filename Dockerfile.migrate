@@ -1,0 +1,43 @@
+# Multi-stage build untuk Prisma migration
+FROM node:20-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install dependencies (termasuk Prisma CLI)
+RUN npm ci && npm cache clean --force
+
+# Copy Prisma schema dan migration files
+COPY prisma ./prisma
+COPY prisma.config.ts ./
+
+# Generate Prisma Client (diperlukan untuk seed)
+RUN npx prisma generate
+
+# Stage 2: Runtime image
+FROM node:20-alpine
+
+# Install PostgreSQL client untuk health check
+RUN apk add --no-cache postgresql-client ca-certificates
+
+WORKDIR /app
+
+# Copy node_modules dari builder (berisi Prisma CLI)
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copy Prisma files
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/generated ./generated
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+
+# Copy package.json (diperlukan untuk prisma commands)
+COPY package.json ./
+
+# Copy migration script
+COPY migrate.sh ./migrate.sh
+RUN chmod +x migrate.sh
+
+# Default command
+CMD ["./migrate.sh"]
