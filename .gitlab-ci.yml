@@ -4,6 +4,7 @@ stages:
   - build
   - release
   - deploy
+  - migrate
 
 variables:
   TAG_IMAGE: $CI_COMMIT_TAG
