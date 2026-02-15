@@ -2,9 +2,11 @@ import "dotenv/config";
 import pg from "pg";
 import { PrismaClient } from "../../generated/prisma/index.js";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { logger } from "../../src/util.js";
+import env from "../../src/env.js";
 
 const { Pool } = pg;
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = new Pool({ connectionString: env.DATABASE_URL });
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
@@ -268,7 +270,7 @@ async function seedAssetCodes() {
     { code: "ZMW", name: "Zambian Kwacha", unit: null },
   ];
 
-  console.log("Starting to seed AssetCode data...");
+  logger.info("Starting to seed AssetCode data...");
   let count = 0;
 
   for (const asset of assetCodes) {
@@ -286,13 +288,13 @@ async function seedAssetCodes() {
         },
       });
       count++;
-      console.log(`✓ Imported: ${asset.code} - ${asset.name}`);
+      logger.info(`✓ Imported: ${asset.code} - ${asset.name}`);
     } catch (error) {
       console.error(`✗ Failed to import: ${asset.code}`, error.message);
     }
   }
 
-  console.log(`\nSuccessfully imported ${count} asset codes`);
+  logger.info(`\nSuccessfully imported ${count} asset codes`);
 }
 
 async function main() {

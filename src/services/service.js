@@ -1,10 +1,10 @@
-import { fieldMap, MetalPriceAPI, validBaseCurrencies } from "./const.js";
-import { generateUUID } from "./helper.js";
-import { prismaClient, validate } from "./util.js";
+import { fieldMap, MetalPriceAPI, validBaseCurrencies } from "../utils/constant.js";
+import { validate } from "../utils/helper.js";
+import { prismaClient } from "../utils/prisma.js";
 import {
   newInvestmentValidation,
   sellInvestmentValidation,
-} from "./validation.js";
+} from "../validation/validation.js";
 import https from "https";
 
 const investmentList = (userID) => {
@@ -35,7 +35,6 @@ const investmentDetail = (userID, investmentID) => {
 const investmentCreate = (userID, request) => {
   const investment = validate(newInvestmentValidation, request);
 
-  investment.id = generateUUID();
   investment.userId = userID;
   investment.initialValuation = investment.amount / investment.quantity;
 
@@ -68,7 +67,6 @@ const investmentSell = async (userID, investmentId, request) => {
     },
   });
 
-  investmentSold.id = generateUUID();
   investmentSold.userId = userID;
   investmentSold.investmentId = investmentId;
   investmentSold.sellPrice = investmentSold.amount / investmentSold.quantity;
@@ -153,7 +151,6 @@ const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
   if (!data.success) {
     throw new Error("Failed to fetch metal prices");
   }
-
 
   const priceField = fieldMap[base];
   const assetUpdates = [];

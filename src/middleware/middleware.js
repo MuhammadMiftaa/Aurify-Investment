@@ -1,4 +1,4 @@
-import { extractAndVerifyJwtClaims } from "./helper.js";
+import { extractAndVerifyJwtClaims } from "../utils/helper.js";
 
 export const authMiddleware = async (req, res, next) => {
   const token = req.get("Authorization");

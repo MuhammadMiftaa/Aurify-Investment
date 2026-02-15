@@ -1,5 +1,9 @@
-import { MetalPriceAPIBasePayload, MetalPriceAPICurrencies } from "./const.js";
-import service from "./service.js";
+import {
+  MetalPriceAPIBasePayload,
+  MetalPriceAPICurrencies,
+} from "../utils/constant.js";
+import env from "../utils/env.js";
+import service from "../services/service.js";
 
 const investmentList = async (req, res, next) => {
   try {
@@ -52,7 +56,11 @@ const investmentCreate = async (req, res, next) => {
 
 const investmentSell = async (req, res, next) => {
   try {
-    const result = await service.investmentSell(req.user.id, req.params.id, req.body);
+    const result = await service.investmentSell(
+      req.user.id,
+      req.params.id,
+      req.body,
+    );
     res.status(200).json({
       status: true,
       statusCode: 200,
@@ -60,9 +68,9 @@ const investmentSell = async (req, res, next) => {
       data: result,
     });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 const assetList = async (req, res, next) => {
   try {
@@ -81,7 +89,11 @@ const assetList = async (req, res, next) => {
 
 const assetRefresh = async (req, res, next) => {
   try {
-    const result = await service.assetRefresh(process.env.METAL_PRICE_API_KEY, MetalPriceAPIBasePayload, MetalPriceAPICurrencies);
+    const result = await service.assetRefresh(
+      env.METAL_PRICE_API_KEY,
+      MetalPriceAPIBasePayload,
+      MetalPriceAPICurrencies,
+    );
 
     res.status(200).json({
       status: true,
