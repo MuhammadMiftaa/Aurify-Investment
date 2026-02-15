@@ -7,7 +7,18 @@ import {
 } from "../validation/validation.js";
 import https from "https";
 
-const investmentList = (userID) => {
+const investmentList = () => {
+  return prismaClient.investment.findMany({
+    where: {
+      deletedAt: null,
+    },
+    include: {
+      assetCode: true,
+    },
+  });
+};
+
+const userInvestmentList = (userID) => {
   return prismaClient.investment.findMany({
     where: {
       userId: userID,
@@ -199,6 +210,7 @@ const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
 
 export default {
   investmentList,
+  userInvestmentList,
   investmentDetail,
   investmentCreate,
   investmentSell,

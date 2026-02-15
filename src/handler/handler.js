@@ -9,7 +9,7 @@ const investmentList = async (req, res, next) => {
   try {
     const user = req.user;
 
-    const result = await service.investmentList(user.id);
+    const result = await service.userInvestmentList(user.id);
 
     res.status(200).json({
       status: true,
