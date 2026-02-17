@@ -5,6 +5,7 @@ import "./utils/cron.js";
 import env from "./utils/env.js";
 import logger from "./utils/logger.js";
 import { GRPCServer } from "./grpc/server/server.js";
+import { closeChannel, closeRabbitMQConnection, getRabbitMQConnection } from "./utils/queue.js";
 
 const web = express();
 const testRouter = express.Router();
@@ -17,6 +18,9 @@ web.use(testRouter);
 web.use(express.json());
 web.use(authMiddleware);
 web.use(router);
+
+// Initialize RabbitMQ connection
+getRabbitMQConnection();
 
 // Start gRPC Server
 const grpcServer = new GRPCServer();
@@ -40,6 +44,9 @@ const shutdown = async () => {
   // Close gRPC Server
   await grpcServer.stop();
   logger.info("gRPC server closed");
+
+  await closeChannel();
+  await closeRabbitMQConnection();
 
   process.exit(0);
 };

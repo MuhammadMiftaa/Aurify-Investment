@@ -111,7 +111,6 @@ export class GRPCServer {
           logger.error("Error starting gRPC server:", error);
           throw error;
         }
-        logger.info(`gRPC server listening on port ${boundPort}`);
       }
     );
   }

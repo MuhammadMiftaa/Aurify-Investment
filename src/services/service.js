@@ -1,6 +1,13 @@
-import { fieldMap, MetalPriceAPI, validBaseCurrencies } from "../utils/constant.js";
+import {
+  EVENT_INVESTMENT_BUY,
+  EVENT_INVESTMENT_SELL,
+  fieldMap,
+  MetalPriceAPI,
+  validBaseCurrencies,
+} from "../utils/constant.js";
 import { validate } from "../utils/helper.js";
 import { prismaClient } from "../utils/prisma.js";
+import { publishWithRetry } from "../utils/queue.js";
 import {
   newInvestmentValidation,
   sellInvestmentValidation,
@@ -9,47 +16,32 @@ import https from "https";
 
 const investmentList = () => {
   return prismaClient.investment.findMany({
-    where: {
-      deletedAt: null,
-    },
-    include: {
-      assetCode: true,
-    },
+    where: { deletedAt: null },
+    include: { assetCode: true },
   });
 };
 
 const userInvestmentList = (userID) => {
   return prismaClient.investment.findMany({
-    where: {
-      userId: userID,
-      deletedAt: null,
-    },
-    include: {
-      assetCode: true,
-    },
+    where: { userId: userID, deletedAt: null },
+    include: { assetCode: true },
   });
 };
 
 const investmentDetail = (userID, investmentID) => {
   return prismaClient.investment.findUnique({
-    where: {
-      id: investmentID,
-      userId: userID,
-      deletedAt: null,
-    },
-    include: {
-      assetCode: true,
-    },
+    where: { id: investmentID, userId: userID, deletedAt: null },
+    include: { assetCode: true },
   });
 };
 
-const investmentCreate = (userID, request) => {
+const investmentCreate = async (userID, request) => {
   const investment = validate(newInvestmentValidation, request);
 
   investment.userId = userID;
   investment.initialValuation = investment.amount / investment.quantity;
 
-  return prismaClient.investment.create({
+  const created = await prismaClient.investment.create({
     data: investment,
     select: {
       id: true,
@@ -62,20 +54,24 @@ const investmentCreate = (userID, request) => {
       description: true,
     },
   });
+
+  // Publish event (non-blocking, tidak rollback jika gagal)
+  publishWithRetry(EVENT_INVESTMENT_BUY, created).catch((err) => {
+    logger.error("Failed to publish investment.created", {
+      error: err.message,
+      id: created.id,
+    });
+  });
+
+  return created;
 };
 
 const investmentSell = async (userID, investmentId, request) => {
   const investmentSold = validate(sellInvestmentValidation, request);
 
   const investment = await prismaClient.investment.findUnique({
-    where: {
-      id: investmentId,
-    },
-    select: {
-      initialValuation: true,
-      quantity: true,
-      amount: true,
-    },
+    where: { id: investmentId },
+    select: { initialValuation: true, quantity: true, amount: true },
   });
 
   investmentSold.userId = userID;
@@ -100,9 +96,7 @@ const investmentSell = async (userID, investmentId, request) => {
       },
     }),
     prismaClient.investment.update({
-      where: {
-        id: investmentId,
-      },
+      where: { id: investmentId },
       data: {
         quantity: investment.quantity - investmentSold.quantity,
         amount:
@@ -112,14 +106,20 @@ const investmentSell = async (userID, investmentId, request) => {
     }),
   ]);
 
+  // Publish event (non-blocking, tidak rollback jika gagal)
+  publishWithRetry(EVENT_INVESTMENT_SELL, investmentSoldCreate).catch((err) => {
+    logger.error("Failed to publish investment.sold", {
+      error: err.message,
+      id: investmentSoldCreate.id,
+    });
+  });
+
   return investmentSoldCreate;
 };
 
 const assetList = () => {
   return prismaClient.assetCode.findMany({
-    where: {
-      deletedAt: null,
-    },
+    where: { deletedAt: null },
     select: {
       code: true,
       name: true,
@@ -188,10 +188,7 @@ const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
       assetUpdates.push(
         prismaClient.assetCode.updateMany({
           where: { code: key, deletedAt: null },
-          data: {
-            [priceField]: priceInBaseCurrency,
-            updatedAt: new Date(),
-          },
+          data: { [priceField]: priceInBaseCurrency, updatedAt: new Date() },
         }),
       );
     }
@@ -201,11 +198,7 @@ const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
     await prismaClient.$transaction(assetUpdates);
   }
 
-  return {
-    success: true,
-    updated: assetUpdates.length,
-    baseCurrency: base,
-  };
+  return { success: true, updated: assetUpdates.length, baseCurrency: base };
 };
 
 export default {

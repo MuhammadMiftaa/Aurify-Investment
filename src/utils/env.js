@@ -46,6 +46,12 @@ const env = {
   LOG_LEVEL: required("LOG_LEVEL"),
 
   METAL_PRICE_API_KEY: required("METAL_PRICE_API_KEY"),
+
+  RABBITMQ_HOST: required("RABBITMQ_HOST"),
+  RABBITMQ_PORT: required("RABBITMQ_PORT"),
+  RABBITMQ_USER: required("RABBITMQ_USER"),
+  RABBITMQ_PASSWORD: required("RABBITMQ_PASSWORD"),
+  RABBITMQ_VIRTUAL_HOST: required("RABBITMQ_VIRTUAL_HOST"),
 };
 
 //$ Exit if any env is missing

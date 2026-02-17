@@ -23,6 +23,7 @@
     "@muhammadmiftaa/refina-protobuf": "github:MuhammadMiftaa/Refina-Protobuf#v1.3.1",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
+    "amqp-connection-manager": "^5.0.0",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "joi": "^18.0.2",

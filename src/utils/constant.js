@@ -30,3 +30,10 @@ export const ERROR_MESSAGES = {
   // Server
   INTERNAL_SERVER_ERROR: "Internal server error",
 };
+
+export const EXCHANGE_NAME = "refina_microservice";
+export const EXCHANGE_TYPE = "topic";
+export const EVENT_INVESTMENT_SELL = "investment.sell";
+export const EVENT_INVESTMENT_BUY = "investment.buy";
+export const EVENT_MAX_RETRIES = 5;
+export const EVENT_DELAY_RETRY = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
