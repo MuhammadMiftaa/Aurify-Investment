@@ -57,7 +57,6 @@ const investmentCreate = async (userID, request) => {
     },
   });
 
-  // Publish event (non-blocking, tidak rollback jika gagal)
   publishWithRetry(EVENT_INVESTMENT_BUY, created).catch((err) => {
     logger.error("Failed to publish investment.created", {
       error: err.message,
@@ -72,9 +71,9 @@ const investmentSell = async (userID, request) => {
   const body = validate(sellInvestmentValidation, request);
 
   const investments = await prismaClient.investment.findMany({
-    where: { code: body.assetcode, quantity: { gt: 0 } },
+    where: { code: body.assetcode, quantity: { gt: 0 }, deletedAt: null },
     select: { id: true, initialValuation: true, quantity: true, amount: true },
-    orderBy: { createdAt: "desc" },
+    orderBy: { createdAt: "asc" },
   });
 
   if (investments.length === 0) {
@@ -86,32 +85,35 @@ const investmentSell = async (userID, request) => {
     0,
   );
   if (totalQuantity < body.quantity) {
-    logger.warn(
-      "Selling more than available quantity " +
-        totalQuantity +
-        ", requested: " +
-        body.quantity,
-    );
     throw new ValidationError("Insufficient investment quantity");
   }
 
+  const sellPricePerUnit = body.amount / body.quantity;
   const investmentSold = [];
+  let quantityLeftToSell = body.quantity;
 
-  let amountLeftToSell = body.quantity;
   for (const investment of investments) {
+    if (quantityLeftToSell <= 0) break;
+
+    const quantitySoldFromThis = Math.min(
+      Number(investment.quantity),
+      quantityLeftToSell,
+    );
+
+    const amountSoldFromThis = quantitySoldFromThis * sellPricePerUnit;
+    const deficit = sellPricePerUnit - Number(investment.initialValuation);
+
     const [investmentSoldCreate] = await prismaClient.$transaction([
       prismaClient.investmentSold.create({
         data: {
           userId: userID,
-          investment: {
-            connect: { id: investment.id },
-          },
-          quantity: Math.min(investment.quantity, amountLeftToSell),
-          sellPrice: body.amount / body.quantity,
-          amount: body.amount,
+          investment: { connect: { id: investment.id } },
+          quantity: quantitySoldFromThis,
+          sellPrice: sellPricePerUnit,
+          amount: amountSoldFromThis,
           date: body.date,
           description: body.description,
-          deficit: body.sellPrice - investment.initialValuation,
+          deficit: deficit,
         },
         select: {
           userId: true,
@@ -127,29 +129,21 @@ const investmentSell = async (userID, request) => {
       prismaClient.investment.update({
         where: { id: investment.id },
         data: {
-          quantity: {
-            decrement: Math.min(investment.quantity, amountLeftToSell),
-          },
+          quantity: { decrement: quantitySoldFromThis },
           amount: {
             decrement:
-              Math.min(investment.quantity, amountLeftToSell) *
-              investment.initialValuation,
+              quantitySoldFromThis * Number(investment.initialValuation),
           },
         },
       }),
     ]);
 
     investmentSold.push(investmentSoldCreate);
-
-    amountLeftToSell -= investment.quantity;
-    if (amountLeftToSell <= 0) break;
+    quantityLeftToSell -= quantitySoldFromThis;
   }
 
-  // Publish event (non-blocking, tidak rollback jika gagal)
   publishWithRetry(EVENT_INVESTMENT_SELL, investmentSold).catch((err) => {
-    logger.error("Failed to publish investment.sold", {
-      error: err.message,
-    });
+    logger.error("Failed to publish investment.sold", { error: err.message });
   });
 
   return investmentSold;
