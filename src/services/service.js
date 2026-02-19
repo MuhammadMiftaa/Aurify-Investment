@@ -5,7 +5,9 @@ import {
   MetalPriceAPI,
   validBaseCurrencies,
 } from "../utils/constant.js";
+import { NotFoundError, ValidationError } from "../utils/errors.js";
 import { validate } from "../utils/helper.js";
+import logger from "../utils/logger.js";
 import { prismaClient } from "../utils/prisma.js";
 import { publishWithRetry } from "../utils/queue.js";
 import {
@@ -66,55 +68,91 @@ const investmentCreate = async (userID, request) => {
   return created;
 };
 
-const investmentSell = async (userID, investmentId, request) => {
-  const investmentSold = validate(sellInvestmentValidation, request);
+const investmentSell = async (userID, request) => {
+  const body = validate(sellInvestmentValidation, request);
 
-  const investment = await prismaClient.investment.findUnique({
-    where: { id: investmentId },
-    select: { initialValuation: true, quantity: true, amount: true },
+  const investments = await prismaClient.investment.findMany({
+    where: { code: body.assetcode, quantity: { gt: 0 } },
+    select: { id: true, initialValuation: true, quantity: true, amount: true },
+    orderBy: { createdAt: "desc" },
   });
 
-  investmentSold.userId = userID;
-  investmentSold.investmentId = investmentId;
-  investmentSold.sellPrice = investmentSold.amount / investmentSold.quantity;
-  investmentSold.deficit =
-    investmentSold.sellPrice - investment.initialValuation;
+  if (investments.length === 0) {
+    throw new NotFoundError("Investment not found");
+  }
 
-  const [investmentSoldCreate] = await prismaClient.$transaction([
-    prismaClient.investmentSold.create({
-      data: investmentSold,
-      select: {
-        id: true,
-        userId: true,
-        investmentId: true,
-        quantity: true,
-        sellPrice: true,
-        amount: true,
-        date: true,
-        description: true,
-        deficit: true,
-      },
-    }),
-    prismaClient.investment.update({
-      where: { id: investmentId },
-      data: {
-        quantity: investment.quantity - investmentSold.quantity,
-        amount:
-          investment.amount -
-          investmentSold.quantity * investment.initialValuation,
-      },
-    }),
-  ]);
+  const totalQuantity = investments.reduce(
+    (acc, inv) => acc + Number(inv.quantity),
+    0,
+  );
+  if (totalQuantity < body.quantity) {
+    logger.warn(
+      "Selling more than available quantity " +
+        totalQuantity +
+        ", requested: " +
+        body.quantity,
+    );
+    throw new ValidationError("Insufficient investment quantity");
+  }
+
+  const investmentSold = [];
+
+  let amountLeftToSell = body.quantity;
+  for (const investment of investments) {
+    const [investmentSoldCreate] = await prismaClient.$transaction([
+      prismaClient.investmentSold.create({
+        data: {
+          userId: userID,
+          investment: {
+            connect: { id: investment.id },
+          },
+          quantity: Math.min(investment.quantity, amountLeftToSell),
+          sellPrice: body.amount / body.quantity,
+          amount: body.amount,
+          date: body.date,
+          description: body.description,
+          deficit: body.sellPrice - investment.initialValuation,
+        },
+        select: {
+          userId: true,
+          investmentId: true,
+          quantity: true,
+          sellPrice: true,
+          amount: true,
+          date: true,
+          description: true,
+          deficit: true,
+        },
+      }),
+      prismaClient.investment.update({
+        where: { id: investment.id },
+        data: {
+          quantity: {
+            decrement: Math.min(investment.quantity, amountLeftToSell),
+          },
+          amount: {
+            decrement:
+              Math.min(investment.quantity, amountLeftToSell) *
+              investment.initialValuation,
+          },
+        },
+      }),
+    ]);
+
+    investmentSold.push(investmentSoldCreate);
+
+    amountLeftToSell -= investment.quantity;
+    if (amountLeftToSell <= 0) break;
+  }
 
   // Publish event (non-blocking, tidak rollback jika gagal)
-  publishWithRetry(EVENT_INVESTMENT_SELL, investmentSoldCreate).catch((err) => {
+  publishWithRetry(EVENT_INVESTMENT_SELL, investmentSold).catch((err) => {
     logger.error("Failed to publish investment.sold", {
       error: err.message,
-      id: investmentSoldCreate.id,
     });
   });
 
-  return investmentSoldCreate;
+  return investmentSold;
 };
 
 const assetList = () => {

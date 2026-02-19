@@ -9,6 +9,7 @@ const newInvestmentValidation = Joi.object({
 });
 
 const sellInvestmentValidation = Joi.object({
+  assetcode: Joi.string().required(),
   quantity: Joi.number().min(0).required(),
   amount: Joi.number().min(0).required(),
   date: Joi.date().required(),

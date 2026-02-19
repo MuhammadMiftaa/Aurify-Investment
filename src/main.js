@@ -1,5 +1,5 @@
 import express from "express";
-import { authMiddleware } from "./middleware/middleware.js";
+import { authenticate, errorHandler, notFoundHandler, requestLogger } from "./middleware/middleware.js";
 import router from "./route/route.js";
 import "./utils/cron.js";
 import env from "./utils/env.js";
@@ -16,9 +16,12 @@ testRouter.get("/test", (req, res) => {
 
 web.use(testRouter);
 web.use(express.json());
-web.use(authMiddleware);
+web.use(authenticate);
+web.use(requestLogger);
 web.use(router);
-
+web.use(notFoundHandler);
+web.use(errorHandler);
+  
 // Initialize RabbitMQ connection
 getRabbitMQConnection();
 
