@@ -18,21 +18,26 @@ import https from "https";
 
 const investmentList = () => {
   return prismaClient.investment.findMany({
-    where: { deletedAt: null },
+    where: { quantity: { gt: 0 }, deletedAt: null },
     include: { assetCode: true },
   });
 };
 
 const userInvestmentList = (userID) => {
   return prismaClient.investment.findMany({
-    where: { userId: userID, deletedAt: null },
+    where: { userId: userID, quantity: { gt: 0 }, deletedAt: null },
     include: { assetCode: true },
   });
 };
 
 const investmentDetail = (userID, investmentID) => {
   return prismaClient.investment.findUnique({
-    where: { id: investmentID, userId: userID, deletedAt: null },
+    where: {
+      id: investmentID,
+      userId: userID,
+      quantity: { gt: 0 },
+      deletedAt: null,
+    },
     include: { assetCode: true },
   });
 };
@@ -54,6 +59,20 @@ const investmentCreate = async (userID, request) => {
       amount: true,
       date: true,
       description: true,
+      createdAt: true,
+      updatedAt: true,
+      assetCode: {
+        select: {
+          code: true,
+          name: true,
+          unit: true,
+          toUSD: true,
+          toIDR: true,
+          toEUR: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      },
     },
   });
 
@@ -116,6 +135,7 @@ const investmentSell = async (userID, request) => {
           deficit: deficit,
         },
         select: {
+          id: true,
           userId: true,
           investmentId: true,
           quantity: true,
@@ -124,6 +144,24 @@ const investmentSell = async (userID, request) => {
           date: true,
           description: true,
           deficit: true,
+          createdAt: true,
+          updatedAt: true,
+          investment: {
+            select: {
+              assetCode: {
+                select: {
+                  code: true,
+                  name: true,
+                  unit: true,
+                  toUSD: true,
+                  toIDR: true,
+                  toEUR: true,
+                  createdAt: true,
+                  updatedAt: true,
+                },
+              },
+            },
+          },
         },
       }),
       prismaClient.investment.update({
@@ -138,7 +176,11 @@ const investmentSell = async (userID, request) => {
       }),
     ]);
 
-    investmentSold.push(investmentSoldCreate);
+    investmentSold.push({
+      ...investmentSoldCreate,
+      assetCode: { ...investmentSoldCreate.investment.assetCode },
+      investment: undefined,
+    });
     quantityLeftToSell -= quantitySoldFromThis;
   }
 
