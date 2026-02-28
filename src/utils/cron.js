@@ -1,20 +1,33 @@
 import cron from "node-cron";
 import service from "../services/service.js";
-import { MetalPriceAPIBasePayload, MetalPriceAPICurrencies } from "./constant.js";
+import {
+  MetalPriceAPIBasePayload,
+  MetalPriceAPICurrencies,
+} from "./constant.js";
 import env from "./env.js";
+import logger from "./logger.js";
+import {
+  CronService,
+  LogCronAssetRefreshFailed,
+  LogCronAssetRefreshSuccess,
+} from "./log.js";
 
 cron.schedule("0 1 * * *", async () => {
-  // Refresh asset prices daily at midnight
   try {
     const result = await service.assetRefresh(
       env.METAL_PRICE_API_KEY,
       MetalPriceAPIBasePayload,
       MetalPriceAPICurrencies,
     );
-    console.info(
-      `Success refreshing ${result.updated} asset prices to ${result.baseCurrency} at ${new Date().toISOString()}`,
-    );
+    logger.info(LogCronAssetRefreshSuccess, {
+      service: CronService,
+      updated: result.updated,
+      base_currency: result.baseCurrency,
+    });
   } catch (error) {
-    console.info(`Error refreshing asset prices: ${error.message}`);
+    logger.error(LogCronAssetRefreshFailed, {
+      service: CronService,
+      error: error.message,
+    });
   }
 });

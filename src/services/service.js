@@ -8,6 +8,11 @@ import {
 import { NotFoundError, ValidationError } from "../utils/errors.js";
 import { validate } from "../utils/helper.js";
 import logger from "../utils/logger.js";
+import {
+  InvestmentService,
+  LogInvestmentEventPublishFailed,
+  LogInvestmentSoldEventPublishFailed,
+} from "../utils/log.js";
 import { prismaClient } from "../utils/prisma.js";
 import { publishWithRetry } from "../utils/queue.js";
 import {
@@ -77,9 +82,11 @@ const investmentCreate = async (userID, request) => {
   });
 
   publishWithRetry(EVENT_INVESTMENT_BUY, created).catch((err) => {
-    logger.error("Failed to publish investment.created", {
+    logger.error(LogInvestmentEventPublishFailed, {
+      service: InvestmentService,
+      investment_id: created.id,
+      event_type: EVENT_INVESTMENT_BUY,
       error: err.message,
-      id: created.id,
     });
   });
 
@@ -185,7 +192,11 @@ const investmentSell = async (userID, request) => {
   }
 
   publishWithRetry(EVENT_INVESTMENT_SELL, investmentSold).catch((err) => {
-    logger.error("Failed to publish investment.sold", { error: err.message });
+    logger.error(LogInvestmentSoldEventPublishFailed, {
+      service: InvestmentService,
+      event_type: EVENT_INVESTMENT_SELL,
+      error: err.message,
+    });
   });
 
   return investmentSold;

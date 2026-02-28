@@ -3,6 +3,14 @@ import pg from "pg";
 import logger from "./logger.js";
 import env from "./env.js";
 import { PrismaClient } from "../../generated/prisma/index.js";
+import {
+  DatabaseService,
+  LogDBPoolConfigured,
+  LogDBQueryError,
+  LogDBQueryExecuted,
+  LogDBQueryInfo,
+  LogDBQueryWarn,
+} from "./log.js";
 
 //$ Database connection pool configuration
 const poolConfig = {
@@ -13,11 +21,12 @@ const poolConfig = {
   connectionTimeoutMillis: env.DB_CONNECTION_TIMEOUT_MS,
 };
 
-logger.info("Database pool configuration", {
+logger.info(LogDBPoolConfigured, {
+  service: DatabaseService,
   max: poolConfig.max,
   min: poolConfig.min,
-  idleTimeoutMillis: poolConfig.idleTimeoutMillis,
-  connectionTimeoutMillis: poolConfig.connectionTimeoutMillis,
+  idle_timeout_ms: poolConfig.idleTimeoutMillis,
+  connection_timeout_ms: poolConfig.connectionTimeoutMillis,
 });
 
 //$ Create PostgreSQL connection pool
@@ -51,17 +60,30 @@ export const prismaClient = new PrismaClient({
 
 //$ Create event listeners for Prisma client
 prismaClient.$on("error", (e) => {
-  logger.error(e);
+  logger.error(LogDBQueryError, {
+    service: DatabaseService,
+    error: e.message ?? e,
+  });
 });
 
 prismaClient.$on("warn", (e) => {
-  logger.warn(e);
+  logger.warn(LogDBQueryWarn, {
+    service: DatabaseService,
+    message: e.message ?? e,
+  });
 });
 
 prismaClient.$on("info", (e) => {
-  logger.info(e);
+  logger.info(LogDBQueryInfo, {
+    service: DatabaseService,
+    message: e.message ?? e,
+  });
 });
 
 prismaClient.$on("query", (e) => {
-  logger.info(e);
+  logger.debug(LogDBQueryExecuted, {
+    service: DatabaseService,
+    query: e.query,
+    duration_ms: e.duration,
+  });
 });

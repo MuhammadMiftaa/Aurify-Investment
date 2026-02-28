@@ -7,6 +7,20 @@ import {
   EXCHANGE_NAME,
   EXCHANGE_TYPE,
 } from "./constant.js";
+import {
+  LogEventPublishAllFailed,
+  LogEventPublishAttemptFailed,
+  LogEventPublished,
+  LogRabbitmqChannelClosed,
+  LogRabbitmqChannelError,
+  LogRabbitmqChannelReady,
+  LogRabbitmqConnectFailed,
+  LogRabbitmqConnected,
+  LogRabbitmqConnectionClosed,
+  LogRabbitmqDisconnected,
+  LogRabbitmqExchangeDeclared,
+  RabbitmqService,
+} from "./log.js";
 
 let connection = null;
 
@@ -21,15 +35,21 @@ export const getRabbitMQConnection = () => {
   });
 
   connection.on("connect", () => {
-    logger.info("RabbitMQ connected");
+    logger.info(LogRabbitmqConnected, { service: RabbitmqService });
   });
 
   connection.on("disconnect", ({ err }) => {
-    logger.warn("RabbitMQ disconnected", { reason: err?.message });
+    logger.warn(LogRabbitmqDisconnected, {
+      service: RabbitmqService,
+      error: err?.message,
+    });
   });
 
   connection.on("connectFailed", ({ err }) => {
-    logger.error("RabbitMQ connection failed", { error: err?.message });
+    logger.error(LogRabbitmqConnectFailed, {
+      service: RabbitmqService,
+      error: err?.message,
+    });
   });
 
   connection.createChannel({
@@ -38,7 +58,10 @@ export const getRabbitMQConnection = () => {
       await channel.assertExchange(EXCHANGE_NAME, EXCHANGE_TYPE, {
         durable: true,
       });
-      logger.info(`Exchange "${EXCHANGE_NAME}" declared`);
+      logger.info(LogRabbitmqExchangeDeclared, {
+        service: RabbitmqService,
+        exchange: EXCHANGE_NAME,
+      });
     },
   });
 
@@ -49,7 +72,7 @@ export const closeRabbitMQConnection = async () => {
   if (connection) {
     await connection.close();
     connection = null;
-    logger.info("RabbitMQ connection closed");
+    logger.info(LogRabbitmqConnectionClosed, { service: RabbitmqService });
   }
 };
 
@@ -66,16 +89,22 @@ const getChannel = () => {
       await channel.assertExchange(EXCHANGE_NAME, EXCHANGE_TYPE, {
         durable: true,
       });
-      logger.info(`Exchange "${EXCHANGE_NAME}" declared`);
+      logger.info(LogRabbitmqExchangeDeclared, {
+        service: RabbitmqService,
+        exchange: EXCHANGE_NAME,
+      });
     },
   });
 
   channelWrapper.on("connect", () => {
-    logger.info("RabbitMQ channel ready");
+    logger.info(LogRabbitmqChannelReady, { service: RabbitmqService });
   });
 
   channelWrapper.on("error", (err) => {
-    logger.error("RabbitMQ channel error", { error: err.message });
+    logger.error(LogRabbitmqChannelError, {
+      service: RabbitmqService,
+      error: err.message,
+    });
   });
 
   return channelWrapper;
@@ -90,7 +119,10 @@ export const publish = async (routingKey, payload) => {
     timestamp: Date.now(),
   });
 
-  logger.info(`Published event: ${routingKey}`, { payload });
+  logger.info(LogEventPublished, {
+    service: RabbitmqService,
+    routing_key: routingKey,
+  });
 };
 
 export const publishWithRetry = async (
@@ -104,13 +136,20 @@ export const publishWithRetry = async (
       await publish(routingKey, payload);
       return;
     } catch (err) {
-      logger.warn(`Publish attempt ${attempt}/${retries} failed`, {
-        routingKey,
+      logger.warn(LogEventPublishAttemptFailed, {
+        service: RabbitmqService,
+        routing_key: routingKey,
+        attempt,
+        retries,
         error: err.message,
       });
 
       if (attempt === retries) {
-        logger.error("All publish attempts failed", { routingKey, payload });
+        logger.error(LogEventPublishAllFailed, {
+          service: RabbitmqService,
+          routing_key: routingKey,
+          error: err.message,
+        });
         return;
       }
 
@@ -123,6 +162,6 @@ export const closeChannel = async () => {
   if (channelWrapper) {
     await channelWrapper.close();
     channelWrapper = null;
-    logger.info("RabbitMQ channel closed");
+    logger.info(LogRabbitmqChannelClosed, { service: RabbitmqService });
   }
 };
