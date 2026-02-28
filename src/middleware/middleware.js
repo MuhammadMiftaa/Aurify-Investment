@@ -129,6 +129,7 @@ export function errorHandler(err, req, res, next) {
       path: req.path,
       method: req.method,
       error: err.message,
+      stack: err.stack,
     });
   }
 

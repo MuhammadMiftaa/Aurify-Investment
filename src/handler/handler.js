@@ -88,7 +88,7 @@ const investmentCreate = async (req, res, next) => {
     });
   } catch (error) {
     if (error.isOperational && error.statusCode === 400) {
-      logger.warn(LogInvestmentCreateFailed, {
+      logger.warn(LogInvestmentCreateBadRequest, {
         service: InvestmentService,
         request_id: requestID,
         error: error.message,

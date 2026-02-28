@@ -54,6 +54,7 @@ export const LogRouteNotFound = "route_not_found";
 export const LogRequestCompleted = "request_completed";
 
 // --- investment (handler) ---
+export const LogInvestmentCreateBadRequest = "investment_create_bad_request";
 export const LogInvestmentCreateFailed = "investment_create_failed";
 export const LogInvestmentCreated = "investment_created";
 export const LogInvestmentSellFailed = "investment_sell_failed";
@@ -91,6 +92,12 @@ export const LogDBQueryExecuted = "db_query_executed";
 // --- cron ---
 export const LogCronAssetRefreshSuccess = "cron_asset_refresh_success";
 export const LogCronAssetRefreshFailed = "cron_asset_refresh_failed";
+
+// --- asset seeding ---
+export const LogAssetSeedStarted = "asset_seed_started";
+export const LogAssetSeedImported = "asset_seed_imported";
+export const LogAssetSeedImportFailed = "asset_seed_import_failed";
+export const LogAssetSeedCompleted = "asset_seed_completed";
 
 // ─── Request ID constants ─────────────────────────────────────
 export const REQUEST_ID_HEADER = "X-Request-ID";

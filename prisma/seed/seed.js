@@ -4,6 +4,12 @@ import { PrismaClient } from "../../generated/prisma/index.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { logger } from "../../src/util.js";
 import env from "../../src/env.js";
+import {
+  LogAssetSeedStarted,
+  LogAssetSeedImported,
+  LogAssetSeedImportFailed,
+  LogAssetSeedCompleted,
+} from "../../src/utils/log.js";
 
 const { Pool } = pg;
 const pool = new Pool({ connectionString: env.DATABASE_URL });
@@ -270,7 +276,10 @@ async function seedAssetCodes() {
     { code: "ZMW", name: "Zambian Kwacha", unit: null },
   ];
 
-  logger.info("Starting to seed AssetCode data...");
+  logger.info(LogAssetSeedStarted, {
+    service: "seed",
+    total: assetCodes.length,
+  });
   let count = 0;
 
   for (const asset of assetCodes) {
@@ -288,13 +297,17 @@ async function seedAssetCodes() {
         },
       });
       count++;
-      logger.info(`✓ Imported: ${asset.code} - ${asset.name}`);
+      logger.info(LogAssetSeedImported, { service: "seed", code: asset.code });
     } catch (error) {
-      console.error(`✗ Failed to import: ${asset.code}`, error.message);
+      logger.error(LogAssetSeedImportFailed, {
+        service: "seed",
+        code: asset.code,
+        error: error.message,
+      });
     }
   }
 
-  logger.info(`\nSuccessfully imported ${count} asset codes`);
+  logger.info(LogAssetSeedCompleted, { service: "seed", total: count });
 }
 
 async function main() {
