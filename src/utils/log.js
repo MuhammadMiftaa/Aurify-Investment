@@ -52,6 +52,7 @@ export const LogAuthInvalidHeaderFormat = "auth_invalid_header_format";
 export const LogAuthSuccess = "auth_success";
 export const LogRouteNotFound = "route_not_found";
 export const LogRequestCompleted = "request_completed";
+export const LogUnexpectedError = "unexpected_error";
 
 // --- investment (handler) ---
 export const LogInvestmentCreateBadRequest = "investment_create_bad_request";
@@ -81,6 +82,21 @@ export const LogGetInvestmentsFailed = "get_investments_failed";
 export const LogGetInvestmentsCompleted = "get_investments_completed";
 export const LogGetUserInvestmentsFailed = "get_user_investments_failed";
 export const LogGetUserInvestmentsCompleted = "get_user_investments_completed";
+export const LogGetUserInvestmentListFailed = "get_user_investment_list_failed";
+export const LogGetUserInvestmentListCompleted =
+  "get_user_investment_list_completed";
+export const LogGetInvestmentDetailFailed = "get_investment_detail_failed";
+export const LogGetInvestmentDetailCompleted =
+  "get_investment_detail_completed";
+export const LogCreateInvestmentCompleted = "create_investment_grpc_completed";
+export const LogCreateInvestmentFailed = "create_investment_grpc_failed";
+export const LogSellInvestmentCompleted = "sell_investment_grpc_completed";
+export const LogSellInvestmentFailed = "sell_investment_grpc_failed";
+export const LogGetInvestmentSummaryFailed = "get_investment_summary_failed";
+export const LogGetInvestmentSummaryCompleted =
+  "get_investment_summary_completed";
+export const LogGetAssetCodesFailed = "get_asset_codes_failed";
+export const LogGetAssetCodesCompleted = "get_asset_codes_completed";
 
 // --- database ---
 export const LogDBPoolConfigured = "db_pool_configured";
