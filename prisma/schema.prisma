@@ -33,6 +33,7 @@ model Investment {
   id               String    @id @default(uuid())
   code             String
   userId           String
+  walletId         String?
   quantity         Decimal   @db.Decimal(18, 8)
   initialValuation Decimal   @db.Decimal(18, 8)
   amount           Decimal   @db.Decimal(18, 8)
@@ -53,6 +54,7 @@ model InvestmentSold {
   id           String    @id @default(uuid())
   investmentId String
   userId       String
+  walletId     String?
   quantity     Decimal?  @db.Decimal(18, 8)
   sellPrice    Decimal?  @db.Decimal(18, 8)
   amount       Decimal   @db.Decimal(18, 8)

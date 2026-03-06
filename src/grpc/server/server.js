@@ -47,6 +47,7 @@ class InvestmentServiceImpl {
     investmentProto.setDescription(investment.description || "");
     investmentProto.setCreatedAt(investment.createdAt);
     investmentProto.setUpdatedAt(investment.updatedAt);
+    investmentProto.setWalletId(investment.walletId || "");
 
     assetCodeProto.setCode(investment.assetCode.code);
     assetCodeProto.setName(investment.assetCode.name);
@@ -88,6 +89,7 @@ class InvestmentServiceImpl {
     proto.setDeficit(sold.deficit || 0);
     proto.setCreatedAt(String(sold.createdAt));
     proto.setUpdatedAt(String(sold.updatedAt));
+    proto.setWalletId(sold.walletId || "");
     if (sold.assetCode) {
       proto.setAsset(this._assetCodeToProto(sold.assetCode));
     }
@@ -301,6 +303,7 @@ class InvestmentServiceImpl {
         initialValuation: call.request.getInitialValuation(),
         date: call.request.getDate(),
         description: call.request.getDescription(),
+        walletId: call.request.getWalletId(),
       };
 
       const created = await service.investmentCreate(userId, request);
@@ -344,6 +347,7 @@ class InvestmentServiceImpl {
         amount: call.request.getAmount(),
         date: call.request.getDate(),
         description: call.request.getDescription(),
+        walletId: call.request.getWalletId(),
       };
 
       const soldRecords = await service.investmentSell(userId, request);

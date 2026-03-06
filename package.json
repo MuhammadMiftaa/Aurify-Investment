@@ -20,7 +20,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "@muhammadmiftaa/refina-protobuf": "github:MuhammadMiftaa/Refina-Protobuf#v1.8.0",
+    "@muhammadmiftaa/refina-protobuf": "github:MuhammadMiftaa/Refina-Protobuf#v1.9.0",
     "@prisma/adapter-pg": "^7.2.0",
     "@prisma/client": "^7.2.0",
     "amqp-connection-manager": "^5.0.0",

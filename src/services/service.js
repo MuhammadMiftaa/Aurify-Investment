@@ -64,6 +64,7 @@ const investmentCreate = async (userID, request) => {
       amount: true,
       date: true,
       description: true,
+      walletId: true,
       createdAt: true,
       updatedAt: true,
       assetCode: {
@@ -133,6 +134,7 @@ const investmentSell = async (userID, request) => {
       prismaClient.investmentSold.create({
         data: {
           userId: userID,
+          walletId: body.walletId,
           investment: { connect: { id: investment.id } },
           quantity: quantitySoldFromThis,
           sellPrice: sellPricePerUnit,
@@ -144,6 +146,7 @@ const investmentSell = async (userID, request) => {
         select: {
           id: true,
           userId: true,
+          walletId: true,
           investmentId: true,
           quantity: true,
           sellPrice: true,
