@@ -39,14 +39,14 @@ class InvestmentServiceImpl {
 
     investmentProto.setId(investment.id);
     investmentProto.setCode(investment.code);
-    investmentProto.setUserid(investment.userId);
+    investmentProto.setUserId(investment.userId);
     investmentProto.setQuantity(investment.quantity);
-    investmentProto.setInitialvaluation(investment.initialValuation);
+    investmentProto.setInitialValuation(investment.initialValuation);
     investmentProto.setAmount(investment.amount);
     investmentProto.setDate(investment.date);
     investmentProto.setDescription(investment.description || "");
-    investmentProto.setCreatedat(investment.createdAt);
-    investmentProto.setUpdatedat(investment.updatedAt);
+    investmentProto.setCreatedAt(investment.createdAt);
+    investmentProto.setUpdatedAt(investment.updatedAt);
 
     assetCodeProto.setCode(investment.assetCode.code);
     assetCodeProto.setName(investment.assetCode.name);
@@ -54,10 +54,10 @@ class InvestmentServiceImpl {
     assetCodeProto.setTousd(investment.assetCode.toUSD);
     assetCodeProto.setToidr(investment.assetCode.toIDR);
     assetCodeProto.setToeur(investment.assetCode.toEUR);
-    assetCodeProto.setCreatedat(investment.assetCode.createdAt);
-    assetCodeProto.setUpdatedat(investment.assetCode.updatedAt);
+    assetCodeProto.setCreatedAt(investment.assetCode.createdAt);
+    assetCodeProto.setUpdatedAt(investment.assetCode.updatedAt);
 
-    investmentProto.setAssetcode(assetCodeProto);
+    investmentProto.setAsset(assetCodeProto);
 
     return investmentProto;
   }
@@ -70,26 +70,26 @@ class InvestmentServiceImpl {
     proto.setTousd(asset.toUSD || 0);
     proto.setToidr(asset.toIDR || 0);
     proto.setToeur(asset.toEUR || 0);
-    proto.setCreatedat(String(asset.createdAt));
-    proto.setUpdatedat(String(asset.updatedAt));
+    proto.setCreatedAt(String(asset.createdAt));
+    proto.setUpdatedAt(String(asset.updatedAt));
     return proto;
   }
 
   _soldToProto(sold) {
     const proto = new ipb.InvestmentSold();
     proto.setId(sold.id);
-    proto.setInvestmentid(sold.investmentId);
-    proto.setUserid(sold.userId);
+    proto.setInvestmentId(sold.investmentId);
+    proto.setUserId(sold.userId);
     proto.setQuantity(sold.quantity);
-    proto.setSellprice(sold.sellPrice);
+    proto.setSellPrice(sold.sellPrice);
     proto.setAmount(sold.amount);
     proto.setDate(sold.date);
     proto.setDescription(sold.description || "");
     proto.setDeficit(sold.deficit || 0);
-    proto.setCreatedat(String(sold.createdAt));
-    proto.setUpdatedat(String(sold.updatedAt));
+    proto.setCreatedAt(String(sold.createdAt));
+    proto.setUpdatedAt(String(sold.updatedAt));
     if (sold.assetCode) {
-      proto.setAssetcode(this._assetCodeToProto(sold.assetCode));
+      proto.setAsset(this._assetCodeToProto(sold.assetCode));
     }
     return proto;
   }
@@ -158,11 +158,11 @@ class InvestmentServiceImpl {
 
   async getUserInvestmentList(call, callback) {
     try {
-      const userId = call.request.getUserid();
+      const userId = call.request.getUserId();
       const page = call.request.getPage() || 1;
-      const pageSize = call.request.getPagesize() || 10;
-      const sortBy = call.request.getSortby() || "date";
-      const sortOrder = call.request.getSortorder() || "desc";
+      const pageSize = call.request.getPageSize() || 10;
+      const sortBy = call.request.getSortBy() || "date";
+      const sortOrder = call.request.getSortOrder() || "desc";
       const search = call.request.getSearch() || "";
       const code = call.request.getCode() || "";
 
@@ -220,8 +220,8 @@ class InvestmentServiceImpl {
       resp.setInvestmentsList(paged.map((inv) => this._investmentToProto(inv)));
       resp.setTotal(total);
       resp.setPage(page);
-      resp.setPagesize(pageSize);
-      resp.setTotalpages(totalPages);
+      resp.setPageSize(pageSize);
+      resp.setTotalPages(totalPages);
 
       logger.info(LogGetUserInvestmentListCompleted, {
         service: GRPCServerService,
@@ -245,8 +245,8 @@ class InvestmentServiceImpl {
 
   async getInvestmentDetail(call, callback) {
     try {
-      const userId = call.request.getUserid();
-      const investmentId = call.request.getInvestmentid();
+      const userId = call.request.getUserId();
+      const investmentId = call.request.getInvestmentId();
 
       if (!userId || !investmentId) {
         return callback({
@@ -285,7 +285,7 @@ class InvestmentServiceImpl {
 
   async createInvestment(call, callback) {
     try {
-      const userId = call.request.getUserid();
+      const userId = call.request.getUserId();
 
       if (!userId) {
         return callback({
@@ -298,7 +298,7 @@ class InvestmentServiceImpl {
         code: call.request.getCode(),
         quantity: call.request.getQuantity(),
         amount: call.request.getAmount(),
-        initialValuation: call.request.getInitialvaluation(),
+        initialValuation: call.request.getInitialValuation(),
         date: call.request.getDate(),
         description: call.request.getDescription(),
       };
@@ -329,7 +329,7 @@ class InvestmentServiceImpl {
 
   async sellInvestment(call, callback) {
     try {
-      const userId = call.request.getUserid();
+      const userId = call.request.getUserId();
 
       if (!userId) {
         return callback({
@@ -339,7 +339,7 @@ class InvestmentServiceImpl {
       }
 
       const request = {
-        assetcode: call.request.getAssetcode(),
+        assetcode: call.request.getAssetCode(),
         quantity: call.request.getQuantity(),
         amount: call.request.getAmount(),
         date: call.request.getDate(),
@@ -349,7 +349,7 @@ class InvestmentServiceImpl {
       const soldRecords = await service.investmentSell(userId, request);
 
       const resp = new ipb.SellInvestmentResponse();
-      resp.setSoldrecordsList(soldRecords.map((s) => this._soldToProto(s)));
+      resp.setSoldRecordsList(soldRecords.map((s) => this._soldToProto(s)));
 
       logger.info(LogSellInvestmentCompleted, {
         service: GRPCServerService,
@@ -403,13 +403,13 @@ class InvestmentServiceImpl {
       // For now, we calculate from the investment list
 
       const resp = new ipb.InvestmentSummaryResponse();
-      resp.setTotalinvestments(investments.length);
-      resp.setTotalinvested(totalInvested);
-      resp.setTotalcurrentvalue(totalCurrentValue);
-      resp.setTotalprofitloss(totalProfitLoss);
-      resp.setTotalprofitlosspct(totalProfitLossPct);
-      resp.setTotalsoldamount(0); // TODO: aggregate from sold records
-      resp.setTotalrealizedgain(0); // TODO: aggregate from sold records
+      resp.setTotalInvestments(investments.length);
+      resp.setTotalInvested(totalInvested);
+      resp.setTotalCurrentValue(totalCurrentValue);
+      resp.setTotalProfitLoss(totalProfitLoss);
+      resp.setTotalProfitLossPct(totalProfitLossPct);
+      resp.setTotalSoldAmount(0); // TODO: aggregate from sold records
+      resp.setTotalRealizedGain(0); // TODO: aggregate from sold records
 
       logger.info(LogGetInvestmentSummaryCompleted, {
         service: GRPCServerService,
@@ -435,7 +435,7 @@ class InvestmentServiceImpl {
       const assets = await service.assetList();
 
       const resp = new ipb.GetAssetCodesResponse();
-      resp.setAssetcodesList(assets.map((a) => this._assetCodeToProto(a)));
+      resp.setAssetCodesList(assets.map((a) => this._assetCodeToProto(a)));
 
       logger.info(LogGetAssetCodesCompleted, {
         service: GRPCServerService,
