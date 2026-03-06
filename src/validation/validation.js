@@ -6,6 +6,7 @@ const newInvestmentValidation = Joi.object({
   amount: Joi.number().min(0).required(),
   date: Joi.date().required(),
   description: Joi.string().max(500).optional(),
+  initialValuation: Joi.number().min(0).optional(),
 });
 
 const sellInvestmentValidation = Joi.object({

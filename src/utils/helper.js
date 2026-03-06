@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import env from "./env.js";
+import logger from "./logger.js";
 
 dotenv.config();
 
@@ -36,7 +37,8 @@ export const validate = (schema, request) => {
     allowUnknown: false,
   });
   if (result.error) {
-    throw new ResponseError(400, result.error.message);
+    logger.debug(result.error.message);
+    throw new Error(400, result.error.message);
   } else {
     return result.value;
   }
