@@ -43,10 +43,22 @@ class InvestmentServiceImpl {
     investmentProto.setQuantity(investment.quantity);
     investmentProto.setInitialValuation(investment.initialValuation);
     investmentProto.setAmount(investment.amount);
-    investmentProto.setDate(investment.date);
+    investmentProto.setDate(
+      investment.date instanceof Date
+        ? investment.date.toISOString()
+        : String(investment.date || ""),
+    );
     investmentProto.setDescription(investment.description || "");
-    investmentProto.setCreatedAt(investment.createdAt);
-    investmentProto.setUpdatedAt(investment.updatedAt);
+    investmentProto.setCreatedAt(
+      investment.createdAt instanceof Date
+        ? investment.createdAt.toISOString()
+        : String(investment.createdAt || ""),
+    );
+    investmentProto.setUpdatedAt(
+      investment.updatedAt instanceof Date
+        ? investment.updatedAt.toISOString()
+        : String(investment.updatedAt || ""),
+    );
     investmentProto.setWalletId(investment.walletId || "");
 
     assetCodeProto.setCode(investment.assetCode.code);
@@ -55,8 +67,16 @@ class InvestmentServiceImpl {
     assetCodeProto.setTousd(investment.assetCode.toUSD);
     assetCodeProto.setToidr(investment.assetCode.toIDR);
     assetCodeProto.setToeur(investment.assetCode.toEUR);
-    assetCodeProto.setCreatedAt(investment.assetCode.createdAt);
-    assetCodeProto.setUpdatedAt(investment.assetCode.updatedAt);
+    assetCodeProto.setCreatedAt(
+      investment.assetCode.createdAt instanceof Date
+        ? investment.assetCode.createdAt.toISOString()
+        : String(investment.assetCode.createdAt || ""),
+    );
+    assetCodeProto.setUpdatedAt(
+      investment.assetCode.updatedAt instanceof Date
+        ? investment.assetCode.updatedAt.toISOString()
+        : String(investment.assetCode.updatedAt || ""),
+    );
 
     investmentProto.setAsset(assetCodeProto);
 
@@ -71,8 +91,16 @@ class InvestmentServiceImpl {
     proto.setTousd(asset.toUSD || 0);
     proto.setToidr(asset.toIDR || 0);
     proto.setToeur(asset.toEUR || 0);
-    proto.setCreatedAt(String(asset.createdAt));
-    proto.setUpdatedAt(String(asset.updatedAt));
+    proto.setCreatedAt(
+      asset.createdAt instanceof Date
+        ? asset.createdAt.toISOString()
+        : String(asset.createdAt || ""),
+    );
+    proto.setUpdatedAt(
+      asset.updatedAt instanceof Date
+        ? asset.updatedAt.toISOString()
+        : String(asset.updatedAt || ""),
+    );
     return proto;
   }
 
@@ -84,11 +112,23 @@ class InvestmentServiceImpl {
     proto.setQuantity(sold.quantity);
     proto.setSellPrice(sold.sellPrice);
     proto.setAmount(sold.amount);
-    proto.setDate(sold.date);
+    proto.setDate(
+      sold.date instanceof Date
+        ? sold.date.toISOString()
+        : String(sold.date || ""),
+    );
     proto.setDescription(sold.description || "");
     proto.setDeficit(sold.deficit || 0);
-    proto.setCreatedAt(String(sold.createdAt));
-    proto.setUpdatedAt(String(sold.updatedAt));
+    proto.setCreatedAt(
+      sold.createdAt instanceof Date
+        ? sold.createdAt.toISOString()
+        : String(sold.createdAt || ""),
+    );
+    proto.setUpdatedAt(
+      sold.updatedAt instanceof Date
+        ? sold.updatedAt.toISOString()
+        : String(sold.updatedAt || ""),
+    );
     proto.setWalletId(sold.walletId || "");
     if (sold.assetCode) {
       proto.setAsset(this._assetCodeToProto(sold.assetCode));
