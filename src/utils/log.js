@@ -47,9 +47,6 @@ export const LogUncaughtException = "uncaught_exception";
 export const LogUnhandledRejection = "unhandled_rejection";
 
 // --- http middleware ---
-export const LogAuthMissingHeader = "auth_missing_header";
-export const LogAuthInvalidHeaderFormat = "auth_invalid_header_format";
-export const LogAuthSuccess = "auth_success";
 export const LogRouteNotFound = "route_not_found";
 export const LogRequestCompleted = "request_completed";
 export const LogUnexpectedError = "unexpected_error";

@@ -10,20 +10,6 @@ export const fieldMap = {
 
 // Error Messages
 export const ERROR_MESSAGES = {
-  // Authentication
-  INVALID_CREDENTIALS: "Invalid credentials",
-  TOKEN_REQUIRED: "Authentication token is required",
-  TOKEN_INVALID: "Invalid or expired token",
-
-  // Authorization
-  FORBIDDEN: "You do not have permission to perform this action",
-  ADMIN_ONLY: "This action is restricted to administrators only",
-
-  // Orders
-  ORDER_NOT_FOUND: "Order not found",
-  INVALID_STATUS_TRANSITION: "Invalid status transition",
-  CANNOT_UPDATE_OWN_ORDER_ONLY: "You can only update your own orders",
-
   // Validation
   VALIDATION_FAILED: "Validation failed",
 

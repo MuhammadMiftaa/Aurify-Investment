@@ -28,6 +28,13 @@ import {
   LogGRPCServerStarted,
   LogGRPCServiceRegistered,
 } from "../../utils/log.js";
+import {
+  unaryServerInterceptor,
+  serverStreamInterceptor,
+  logFieldsFromCall,
+  CTX_USER_ID,
+  CTX_REQUEST_ID,
+} from "../interceptor/userMetadata.js";
 
 const igrpc = igrpcModule.InvestmentServiceService || igrpcModule;
 const ipb = ipbModule.proto?.investment || ipbModule;
@@ -137,6 +144,7 @@ class InvestmentServiceImpl {
   }
 
   async getInvestments(call) {
+    const lf = logFieldsFromCall(call);
     try {
       const limit = call.request.getLimit() || 10;
       const investments = await service.investmentList(limit);
@@ -147,12 +155,12 @@ class InvestmentServiceImpl {
 
       call.end();
       logger.info(LogGetInvestmentsCompleted, {
-        service: GRPCServerService,
+        ...lf,
         count: investments.length,
       });
     } catch (error) {
       logger.error(LogGetInvestmentsFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
       call.destroy(
@@ -165,6 +173,7 @@ class InvestmentServiceImpl {
   }
 
   async getUserInvestments(call) {
+    const lf = logFieldsFromCall(call);
     try {
       const userId = call.request.getId();
 
@@ -180,13 +189,13 @@ class InvestmentServiceImpl {
 
       call.end();
       logger.info(LogGetUserInvestmentsCompleted, {
-        service: GRPCServerService,
+        ...lf,
         user_id: userId,
         count: investments.length,
       });
     } catch (error) {
       logger.error(LogGetUserInvestmentsFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
       call.destroy(
@@ -199,6 +208,7 @@ class InvestmentServiceImpl {
   }
 
   async getUserInvestmentList(call, callback) {
+    const lf = logFieldsFromCall(call);
     try {
       const userId = call.request.getUserId();
       const page = call.request.getPage() || 1;
@@ -266,7 +276,7 @@ class InvestmentServiceImpl {
       resp.setTotalPages(totalPages);
 
       logger.info(LogGetUserInvestmentListCompleted, {
-        service: GRPCServerService,
+        ...lf,
         user_id: userId,
         total,
         page,
@@ -275,7 +285,7 @@ class InvestmentServiceImpl {
       callback(null, resp);
     } catch (error) {
       logger.error(LogGetUserInvestmentListFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
       callback({
@@ -286,6 +296,7 @@ class InvestmentServiceImpl {
   }
 
   async getInvestmentDetail(call, callback) {
+    const lf = logFieldsFromCall(call);
     try {
       const userId = call.request.getUserId();
       const investmentId = call.request.getInvestmentId();
@@ -307,7 +318,7 @@ class InvestmentServiceImpl {
       }
 
       logger.info(LogGetInvestmentDetailCompleted, {
-        service: GRPCServerService,
+        ...lf,
         user_id: userId,
         investment_id: investmentId,
       });
@@ -315,7 +326,7 @@ class InvestmentServiceImpl {
       callback(null, this._investmentToProto(investment));
     } catch (error) {
       logger.error(LogGetInvestmentDetailFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
       callback({
@@ -326,6 +337,7 @@ class InvestmentServiceImpl {
   }
 
   async createInvestment(call, callback) {
+    const lf = logFieldsFromCall(call);
     try {
       const userId = call.request.getUserId();
 
@@ -349,7 +361,7 @@ class InvestmentServiceImpl {
       const created = await service.investmentCreate(userId, request);
 
       logger.info(LogCreateInvestmentCompleted, {
-        service: GRPCServerService,
+        ...lf,
         user_id: userId,
         investment_id: created.id,
       });
@@ -357,7 +369,7 @@ class InvestmentServiceImpl {
       callback(null, this._investmentToProto(created));
     } catch (error) {
       logger.error(LogCreateInvestmentFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
 
@@ -371,6 +383,7 @@ class InvestmentServiceImpl {
   }
 
   async sellInvestment(call, callback) {
+    const lf = logFieldsFromCall(call);
     try {
       const userId = call.request.getUserId();
 
@@ -396,7 +409,7 @@ class InvestmentServiceImpl {
       resp.setSoldRecordsList(soldRecords.map((s) => this._soldToProto(s)));
 
       logger.info(LogSellInvestmentCompleted, {
-        service: GRPCServerService,
+        ...lf,
         user_id: userId,
         sold_count: soldRecords.length,
       });
@@ -404,7 +417,7 @@ class InvestmentServiceImpl {
       callback(null, resp);
     } catch (error) {
       logger.error(LogSellInvestmentFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
 
@@ -417,6 +430,7 @@ class InvestmentServiceImpl {
   }
 
   async getInvestmentSummary(call, callback) {
+    const lf = logFieldsFromCall(call);
     try {
       const userId = call.request.getId();
 
@@ -456,7 +470,7 @@ class InvestmentServiceImpl {
       resp.setTotalRealizedGain(0); // TODO: aggregate from sold records
 
       logger.info(LogGetInvestmentSummaryCompleted, {
-        service: GRPCServerService,
+        ...lf,
         user_id: userId,
         total_investments: investments.length,
       });
@@ -464,7 +478,7 @@ class InvestmentServiceImpl {
       callback(null, resp);
     } catch (error) {
       logger.error(LogGetInvestmentSummaryFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
       callback({
@@ -475,6 +489,7 @@ class InvestmentServiceImpl {
   }
 
   async getAssetCodes(call, callback) {
+    const lf = logFieldsFromCall(call);
     try {
       const assets = await service.assetList();
 
@@ -482,14 +497,14 @@ class InvestmentServiceImpl {
       resp.setAssetCodesList(assets.map((a) => this._assetCodeToProto(a)));
 
       logger.info(LogGetAssetCodesCompleted, {
-        service: GRPCServerService,
+        ...lf,
         count: assets.length,
       });
 
       callback(null, resp);
     } catch (error) {
       logger.error(LogGetAssetCodesFailed, {
-        service: GRPCServerService,
+        ...lf,
         error: error.message,
       });
       callback({
@@ -504,7 +519,33 @@ export class GRPCServer {
   constructor() {
     this.server = new grpc.Server();
 
-    this.server.addService(igrpc, new InvestmentServiceImpl());
+    const impl = new InvestmentServiceImpl();
+
+    // Wrap each handler with the appropriate interceptor.
+    // Server-streaming RPCs use serverStreamInterceptor (no callback).
+    // Unary RPCs use unaryServerInterceptor (call, callback).
+    const wrappedService = {
+      getInvestments: serverStreamInterceptor(impl.getInvestments.bind(impl)),
+      getUserInvestments: serverStreamInterceptor(
+        impl.getUserInvestments.bind(impl),
+      ),
+      getUserInvestmentList: unaryServerInterceptor(
+        impl.getUserInvestmentList.bind(impl),
+      ),
+      getInvestmentDetail: unaryServerInterceptor(
+        impl.getInvestmentDetail.bind(impl),
+      ),
+      createInvestment: unaryServerInterceptor(
+        impl.createInvestment.bind(impl),
+      ),
+      sellInvestment: unaryServerInterceptor(impl.sellInvestment.bind(impl)),
+      getInvestmentSummary: unaryServerInterceptor(
+        impl.getInvestmentSummary.bind(impl),
+      ),
+      getAssetCodes: unaryServerInterceptor(impl.getAssetCodes.bind(impl)),
+    };
+
+    this.server.addService(igrpc, wrappedService);
 
     logger.info(LogGRPCServiceRegistered, {
       service: GRPCServerService,

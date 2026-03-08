@@ -40,9 +40,6 @@ const env = {
   DB_IDLE_TIMEOUT_MS: requiredInt("DB_IDLE_TIMEOUT_MS"),
   DB_CONNECTION_TIMEOUT_MS: requiredInt("DB_CONNECTION_TIMEOUT_MS"),
 
-  JWT_SECRET_KEY: required("JWT_SECRET_KEY"),
-  JWT_EXPIRES_IN: required("JWT_EXPIRES_IN"),
-
   LOG_LEVEL: required("LOG_LEVEL"),
 
   METAL_PRICE_API_KEY: required("METAL_PRICE_API_KEY"),

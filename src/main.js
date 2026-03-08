@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  authenticate,
   errorHandler,
   notFoundHandler,
   requestIDMiddleware,
@@ -35,9 +34,8 @@ testRouter.get("/test", (req, res) => {
 
 web.use(testRouter);
 web.use(express.json());
-// Middleware order: requestID → authenticate → requestLogger → router
+// Middleware order: requestID → requestLogger → router (no auth — service is internal, accessed via gRPC only)
 web.use(requestIDMiddleware);
-web.use(authenticate);
 web.use(requestLogger);
 web.use(router);
 web.use(notFoundHandler);

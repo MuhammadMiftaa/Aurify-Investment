@@ -1,12 +1,8 @@
 import { randomUUID } from "crypto";
 import { ERROR_MESSAGES } from "../utils/constant.js";
-import { extractAndVerifyJwtClaims } from "../utils/helper.js";
 import logger from "../utils/logger.js";
 import {
   HTTPServerService,
-  LogAuthInvalidHeaderFormat,
-  LogAuthMissingHeader,
-  LogAuthSuccess,
   LogRequestCompleted,
   LogRouteNotFound,
   LogUnexpectedError,
@@ -24,56 +20,6 @@ export function requestIDMiddleware(req, res, next) {
   req[REQUEST_ID_LOCAL_KEY] = requestID;
   res.setHeader(REQUEST_ID_HEADER, requestID);
   next();
-}
-
-//$ Extracts user info from token and attaches to req.user
-export function authenticate(req, res, next) {
-  try {
-    const requestID = req[REQUEST_ID_LOCAL_KEY];
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader) {
-      logger.warn(LogAuthMissingHeader, {
-        service: HTTPServerService,
-        request_id: requestID,
-      });
-      const err = new Error(ERROR_MESSAGES.TOKEN_REQUIRED);
-      err.statusCode = 401;
-      err.isOperational = true;
-      return next(err);
-    }
-
-    const parts = authHeader.split(" ");
-    if (parts.length !== 2 || parts[0] !== "Bearer") {
-      logger.warn(LogAuthInvalidHeaderFormat, {
-        service: HTTPServerService,
-        request_id: requestID,
-      });
-      const err = new Error(ERROR_MESSAGES.TOKEN_INVALID);
-      err.statusCode = 401;
-      err.isOperational = true;
-      return next(err);
-    }
-
-    const token = parts[1];
-    const decoded = extractAndVerifyJwtClaims(token);
-
-    req.user = {
-      id: decoded.id,
-      email: decoded.email,
-      username: decoded.username,
-    };
-
-    logger.debug(LogAuthSuccess, {
-      service: HTTPServerService,
-      request_id: requestID,
-      user_id: req.user.id,
-    });
-
-    next();
-  } catch (error) {
-    next(error);
-  }
 }
 
 //$ HTTP access log — logs every request lifecycle with structured fields.
