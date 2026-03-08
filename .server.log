@@ -1,0 +1,15 @@
+{"connection_timeout_ms":5000,"idle_timeout_ms":30000,"level":"info","max":10,"message":"db_pool_configured","min":2,"service":"database","timestamp":"2026-03-08T07:09:41.695Z"}
+{"grpc_service":"InvestmentService","level":"info","message":"grpc_service_registered","service":"grpc_server","timestamp":"2026-03-08T07:09:41.974Z"}
+{"level":"info","message":"http_server_started","port":8087,"service":"http_server","timestamp":"2026-03-08T07:09:41.988Z"}
+{"level":"info","message":"grpc_server_started","port":10003,"service":"grpc_server","timestamp":"2026-03-08T07:09:41.999Z"}
+{"level":"info","message":"rabbitmq_connected","service":"rabbitmq","timestamp":"2026-03-08T07:09:42.047Z"}
+{"exchange":"refina_microservice","level":"info","message":"rabbitmq_exchange_declared","service":"rabbitmq","timestamp":"2026-03-08T07:09:42.056Z"}
+{"level":"info","message":"shutdown_started","service":"main","timestamp":"2026-03-08T08:14:52.507Z"}
+{"level":"info","message":"http_server_closed","service":"http_server","timestamp":"2026-03-08T08:14:52.547Z"}
+{"level":"info","message":"grpc_server_closed","service":"grpc_server","timestamp":"2026-03-08T08:14:52.551Z"}
+{"connection_timeout_ms":5000,"idle_timeout_ms":30000,"level":"info","max":10,"message":"db_pool_configured","min":2,"service":"database","timestamp":"2026-03-08T08:15:19.575Z"}
+{"grpc_service":"InvestmentService","level":"info","message":"grpc_service_registered","service":"grpc_server","timestamp":"2026-03-08T08:15:19.830Z"}
+{"level":"info","message":"http_server_started","port":8087,"service":"http_server","timestamp":"2026-03-08T08:15:19.846Z"}
+{"level":"info","message":"grpc_server_started","port":10003,"service":"grpc_server","timestamp":"2026-03-08T08:15:19.861Z"}
+{"level":"info","message":"rabbitmq_connected","service":"rabbitmq","timestamp":"2026-03-08T08:15:19.945Z"}
+{"exchange":"refina_microservice","level":"info","message":"rabbitmq_exchange_declared","service":"rabbitmq","timestamp":"2026-03-08T08:15:19.958Z"}
