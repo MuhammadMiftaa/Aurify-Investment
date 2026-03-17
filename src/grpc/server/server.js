@@ -4,6 +4,7 @@ import ipbModule from "@muhammadmiftaa/refina-protobuf/investment/investment_pb.
 import service from "../../services/service.js";
 import logger from "../../utils/logger.js";
 import env from "../../utils/env.js";
+import { prismaClient } from "../../utils/prisma.js";
 import {
   GRPCServerService,
   LogGetInvestmentsCompleted,
@@ -22,6 +23,10 @@ import {
   LogGetInvestmentSummaryFailed,
   LogGetAssetCodesCompleted,
   LogGetAssetCodesFailed,
+  LogListAssetCodesCompleted,
+  LogListAssetCodesFailed,
+  LogGetAssetCodeDetailCompleted,
+  LogGetAssetCodeDetailFailed,
   LogGRPCServerClosed,
   LogGRPCServerShutdownFailed,
   LogGRPCServerStartFailed,
@@ -513,6 +518,133 @@ class InvestmentServiceImpl {
       });
     }
   }
+
+  async listAssetCodes(call, callback) {
+    const lf = logFieldsFromCall(call);
+    try {
+      const page = call.request.getPage() || 1;
+      const pageSize = call.request.getPageSize() || 10;
+      const sortBy = call.request.getSortBy() || "code";
+      const sortOrder = call.request.getSortOrder() || "asc";
+      const search = call.request.getSearch() || "";
+
+      let assets = await service.assetList();
+
+      // Search filter
+      if (search) {
+        const s = search.toLowerCase();
+        assets = assets.filter(
+          (a) =>
+            a.code.toLowerCase().includes(s) ||
+            a.name.toLowerCase().includes(s) ||
+            (a.unit || "").toLowerCase().includes(s),
+        );
+      }
+
+      const total = assets.length;
+
+      // Sort
+      assets.sort((a, b) => {
+        let cmp = 0;
+        switch (sortBy) {
+          case "name":
+            cmp = a.name.localeCompare(b.name);
+            break;
+          case "unit":
+            cmp = (a.unit || "").localeCompare(b.unit || "");
+            break;
+          case "toUSD":
+            cmp = Number(a.toUSD || 0) - Number(b.toUSD || 0);
+            break;
+          case "toEUR":
+            cmp = Number(a.toEUR || 0) - Number(b.toEUR || 0);
+            break;
+          case "toIDR":
+            cmp = Number(a.toIDR || 0) - Number(b.toIDR || 0);
+            break;
+          case "createdAt":
+            cmp =
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            break;
+          case "code":
+          default:
+            cmp = a.code.localeCompare(b.code);
+            break;
+        }
+        return sortOrder === "desc" ? -cmp : cmp;
+      });
+
+      // Paginate
+      const totalPages = Math.ceil(total / pageSize);
+      const start = (page - 1) * pageSize;
+      const paged = assets.slice(start, start + pageSize);
+
+      const resp = new ipb.ListAssetCodesResponse();
+      resp.setAssetCodesList(paged.map((a) => this._assetCodeToProto(a)));
+      resp.setTotal(total);
+      resp.setPage(page);
+      resp.setPageSize(pageSize);
+      resp.setTotalPages(totalPages);
+
+      logger.info(LogListAssetCodesCompleted, {
+        ...lf,
+        total,
+        page,
+      });
+
+      callback(null, resp);
+    } catch (error) {
+      logger.error(LogListAssetCodesFailed, {
+        ...lf,
+        error: error.message,
+      });
+      callback({
+        code: grpc.status.INTERNAL,
+        message: error.message,
+      });
+    }
+  }
+
+  async getAssetCodeDetail(call, callback) {
+    const lf = logFieldsFromCall(call);
+    try {
+      const code = call.request.getCode();
+
+      if (!code) {
+        return callback({
+          code: grpc.status.INVALID_ARGUMENT,
+          message: "asset code is required",
+        });
+      }
+
+      const asset = await prismaClient.assetCode.findUnique({
+        where: { code, deletedAt: null },
+      });
+
+      if (!asset) {
+        return callback({
+          code: grpc.status.NOT_FOUND,
+          message: "Asset code not found",
+        });
+      }
+
+      logger.info(LogGetAssetCodeDetailCompleted, {
+        ...lf,
+        asset_code: code,
+      });
+
+      callback(null, this._assetCodeToProto(asset));
+    } catch (error) {
+      logger.error(LogGetAssetCodeDetailFailed, {
+        ...lf,
+        error: error.message,
+      });
+      callback({
+        code: grpc.status.INTERNAL,
+        message: error.message,
+      });
+    }
+  }
 }
 
 export class GRPCServer {
@@ -543,6 +675,10 @@ export class GRPCServer {
         impl.getInvestmentSummary.bind(impl),
       ),
       getAssetCodes: unaryServerInterceptor(impl.getAssetCodes.bind(impl)),
+      listAssetCodes: unaryServerInterceptor(impl.listAssetCodes.bind(impl)),
+      getAssetCodeDetail: unaryServerInterceptor(
+        impl.getAssetCodeDetail.bind(impl),
+      ),
     };
 
     this.server.addService(igrpc, wrappedService);

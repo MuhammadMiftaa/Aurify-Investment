@@ -23,3 +23,8 @@ export const EVENT_INVESTMENT_SELL = "investment.sell";
 export const EVENT_INVESTMENT_BUY = "investment.buy";
 export const EVENT_MAX_RETRIES = 5;
 export const EVENT_DELAY_RETRY = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
+
+// Admin exchange and routing keys
+export const ADMIN_EXCHANGE = "refina_admin";
+export const ADMIN_QUEUE = "refina-admin-asset-codes";
+export const ADMIN_ROUTING_KEY = "master.asset_codes";

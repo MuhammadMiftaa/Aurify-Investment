@@ -15,6 +15,7 @@ import {
   closeRabbitMQConnection,
   getRabbitMQConnection,
 } from "./utils/queue.js";
+import { startAdminConsumer, stopAdminConsumer } from "./consumer/admin.js";
 import {
   HTTPServerService,
   LogHTTPServerClosed,
@@ -44,6 +45,9 @@ web.use(errorHandler);
 // Initialize RabbitMQ connection
 getRabbitMQConnection();
 
+// Start Admin Consumer (master data events)
+startAdminConsumer();
+
 // Start gRPC Server
 const grpcServer = new GRPCServer();
 grpcServer.start();
@@ -66,6 +70,7 @@ const shutdown = async () => {
 
   await grpcServer.stop();
 
+  await stopAdminConsumer();
   await closeChannel();
   await closeRabbitMQConnection();
 

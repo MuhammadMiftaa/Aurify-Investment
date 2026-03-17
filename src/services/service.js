@@ -289,6 +289,34 @@ const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
   return { success: true, updated: assetUpdates.length, baseCurrency: base };
 };
 
+const assetCodeCreate = async (data) => {
+  return prismaClient.assetCode.create({
+    data: {
+      code: data.code,
+      name: data.name,
+      unit: data.unit || null,
+    },
+  });
+};
+
+const assetCodeUpdate = async (code, data) => {
+  return prismaClient.assetCode.update({
+    where: { code },
+    data: {
+      name: data.name,
+      unit: data.unit || null,
+      updatedAt: new Date(),
+    },
+  });
+};
+
+const assetCodeDelete = async (code) => {
+  return prismaClient.assetCode.update({
+    where: { code },
+    data: { deletedAt: new Date() },
+  });
+};
+
 export default {
   investmentList,
   userInvestmentList,
@@ -297,4 +325,7 @@ export default {
   investmentSell,
   assetList,
   assetRefresh,
+  assetCodeCreate,
+  assetCodeUpdate,
+  assetCodeDelete,
 };

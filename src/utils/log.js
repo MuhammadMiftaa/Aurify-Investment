@@ -95,6 +95,23 @@ export const LogGetInvestmentSummaryCompleted =
 export const LogGetAssetCodesFailed = "get_asset_codes_failed";
 export const LogGetAssetCodesCompleted = "get_asset_codes_completed";
 
+// --- admin consumer ---
+export const AdminConsumerService = "admin_consumer";
+export const LogAdminConsumerStarted = "admin_consumer_started";
+export const LogAdminConsumerStopped = "admin_consumer_stopped";
+export const LogAdminConsumerFailed = "admin_consumer_failed";
+export const LogAdminEventHandleFailed = "admin_event_handle_failed";
+export const LogAdminEventUnknown = "admin_event_unknown_action";
+export const LogAdminAssetCodeCreated = "admin_asset_code_created";
+export const LogAdminAssetCodeUpdated = "admin_asset_code_updated";
+export const LogAdminAssetCodeDeleted = "admin_asset_code_deleted";
+
+// --- gRPC handlers (admin master data) ---
+export const LogListAssetCodesCompleted = "list_asset_codes_completed";
+export const LogListAssetCodesFailed = "list_asset_codes_failed";
+export const LogGetAssetCodeDetailCompleted = "get_asset_code_detail_completed";
+export const LogGetAssetCodeDetailFailed = "get_asset_code_detail_failed";
+
 // --- database ---
 export const LogDBPoolConfigured = "db_pool_configured";
 export const LogDBQueryError = "db_query_error";
