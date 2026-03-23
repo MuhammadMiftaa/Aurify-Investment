@@ -1,0 +1,629 @@
+{
+  "total": 13,
+  "p": 1,
+  "ps": 500,
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 500,
+    "total": 13
+  },
+  "effortTotal": 50,
+  "debtTotal": 50,
+  "issues": [
+    {
+      "key": "AZzqnAz1t5t5DmIVhhpV",
+      "rule": "javascript:S7772",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/grpc/interceptor/userMetadata.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 1,
+      "hash": "8bb8a4c0bcaa1c529b3164dfb1c2c6ca",
+      "textRange": {
+        "startLine": 1,
+        "endLine": 1,
+        "startOffset": 27,
+        "endOffset": 35
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `node:crypto` over `crypto`.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "import",
+        "nodejs"
+      ],
+      "creationDate": "2026-03-08T06:08:55+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAztt5t5DmIVhhpR",
+      "rule": "javascript:S1128",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/grpc/server/server.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 40,
+      "hash": "a2f68ca982bb0e6a214b27d19b09bbd3",
+      "textRange": {
+        "startLine": 40,
+        "endLine": 40,
+        "startOffset": 2,
+        "endOffset": 13
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import of 'CTX_USER_ID'.",
+      "effort": "1min",
+      "debt": "1min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "es2015",
+        "type-dependent",
+        "unused"
+      ],
+      "creationDate": "2026-03-08T06:08:55+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAztt5t5DmIVhhpS",
+      "rule": "javascript:S1128",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/grpc/server/server.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 41,
+      "hash": "cda7f49e2488c70f79b213ee039e6dd1",
+      "textRange": {
+        "startLine": 41,
+        "endLine": 41,
+        "startOffset": 2,
+        "endOffset": 16
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import of 'CTX_REQUEST_ID'.",
+      "effort": "1min",
+      "debt": "1min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "es2015",
+        "type-dependent",
+        "unused"
+      ],
+      "creationDate": "2026-03-08T06:08:55+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAzRt5t5DmIVhhpL",
+      "rule": "javascript:S7722",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/utils/helper.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 10,
+      "hash": "15b10094c05f158d0c894c8e426bab01",
+      "textRange": {
+        "startLine": 10,
+        "endLine": 10,
+        "startOffset": 20,
+        "endOffset": 23
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Error message should be a string.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "error-handling"
+      ],
+      "creationDate": "2026-03-06T09:14:16+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAztt5t5DmIVhhpT",
+      "rule": "javascript:S1135",
+      "severity": "INFO",
+      "component": "aurify-backend_Aurify-Investment:src/grpc/server/server.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 474,
+      "hash": "0db2ebd91daf6823b658c0e4b2a7a3c2",
+      "textRange": {
+        "startLine": 474,
+        "endLine": 474,
+        "startOffset": 37,
+        "endOffset": 41
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete the task associated to this \"TODO\" comment.",
+      "effort": "0min",
+      "debt": "0min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "cwe"
+      ],
+      "creationDate": "2026-03-06T09:00:21+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "COMPLETE",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "INFO"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAztt5t5DmIVhhpU",
+      "rule": "javascript:S1135",
+      "severity": "INFO",
+      "component": "aurify-backend_Aurify-Investment:src/grpc/server/server.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 475,
+      "hash": "7e92378a8bf19957e6f2d3ab1608c2b7",
+      "textRange": {
+        "startLine": 475,
+        "endLine": 475,
+        "startOffset": 39,
+        "endOffset": 43
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Complete the task associated to this \"TODO\" comment.",
+      "effort": "0min",
+      "debt": "0min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "cwe"
+      ],
+      "creationDate": "2026-03-06T09:00:21+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "COMPLETE",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "INFO"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAzit5t5DmIVhhpO",
+      "rule": "javascript:S7772",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/middleware/middleware.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 1,
+      "hash": "8bb8a4c0bcaa1c529b3164dfb1c2c6ca",
+      "textRange": {
+        "startLine": 1,
+        "endLine": 1,
+        "startOffset": 27,
+        "endOffset": 35
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `node:crypto` over `crypto`.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "import",
+        "nodejs"
+      ],
+      "creationDate": "2026-02-28T04:02:15+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAzit5t5DmIVhhpP",
+      "rule": "javascript:S7773",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/middleware/middleware.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 44,
+      "hash": "58c5f4398330bad5d129303934d87ee1",
+      "textRange": {
+        "startLine": 44,
+        "endLine": 44,
+        "startOffset": 10,
+        "endOffset": 18
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `Number.parseInt` over `parseInt`.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "es2015"
+      ],
+      "creationDate": "2026-02-28T04:02:15+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        },
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAzit5t5DmIVhhpQ",
+      "rule": "javascript:S7773",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/middleware/middleware.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 46,
+      "hash": "bb0bd5be03d6f1e7845f5709284a45e0",
+      "textRange": {
+        "startLine": 46,
+        "endLine": 46,
+        "startOffset": 21,
+        "endOffset": 29
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `Number.parseInt` over `parseInt`.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "es2015"
+      ],
+      "creationDate": "2026-02-28T04:02:15+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        },
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAzat5t5DmIVhhpM",
+      "rule": "javascript:S7773",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/utils/env.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 24,
+      "hash": "69a4bdf513f05043770fa6f944588a8a",
+      "textRange": {
+        "startLine": 24,
+        "endLine": 24,
+        "startOffset": 17,
+        "endOffset": 25
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `Number.parseInt` over `parseInt`.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "es2015"
+      ],
+      "creationDate": "2026-02-15T02:47:42+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        },
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAzat5t5DmIVhhpN",
+      "rule": "javascript:S7773",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/utils/env.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 25,
+      "hash": "60d6a6ccab51aafb44a195fc020fd684",
+      "textRange": {
+        "startLine": 25,
+        "endLine": 25,
+        "startOffset": 6,
+        "endOffset": 11
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `Number.isNaN` over `isNaN`.",
+      "effort": "2min",
+      "debt": "2min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "es2015"
+      ],
+      "creationDate": "2026-02-15T02:47:42+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        },
+        {
+          "softwareQuality": "RELIABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAxDt5t5DmIVhhpJ",
+      "rule": "javascript:S7772",
+      "severity": "MINOR",
+      "component": "aurify-backend_Aurify-Investment:src/services/service.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 22,
+      "hash": "5327aeeefc37a822d849eb66484d0954",
+      "textRange": {
+        "startLine": 22,
+        "endLine": 22,
+        "startOffset": 18,
+        "endOffset": 25
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Prefer `node:https` over `https`.",
+      "effort": "5min",
+      "debt": "5min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "convention",
+        "import",
+        "nodejs"
+      ],
+      "creationDate": "2026-01-18T02:40:05+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "CONVENTIONAL",
+      "cleanCodeAttributeCategory": "CONSISTENT",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    },
+    {
+      "key": "AZzqnAxDt5t5DmIVhhpK",
+      "rule": "javascript:S1788",
+      "severity": "MAJOR",
+      "component": "aurify-backend_Aurify-Investment:src/services/service.js",
+      "project": "aurify-backend_Aurify-Investment",
+      "line": 224,
+      "hash": "d3edaadd492c4d1f3f20bc55f6d4cfd8",
+      "textRange": {
+        "startLine": 224,
+        "endLine": 224,
+        "startOffset": 36,
+        "endOffset": 56
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Default parameters should be last.",
+      "effort": "20min",
+      "debt": "20min",
+      "author": "madmifta77@gmail.com",
+      "tags": [
+        "es2015"
+      ],
+      "creationDate": "2026-01-18T02:40:05+0000",
+      "updateDate": "2026-03-14T04:29:43+0000",
+      "type": "CODE_SMELL",
+      "organization": "aurify-backend",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "Aurify-Investment",
+      "internalTags": []
+    }
+  ],
+  "components": [
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment",
+      "uuid": "AZzmI37rx7FiZgjBazrR",
+      "enabled": true,
+      "qualifier": "TRK",
+      "name": "Aurify-Investment",
+      "longName": "Aurify-Investment"
+    },
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment:src/middleware/middleware.js",
+      "uuid": "AZzqnAYht5t5DmIVhho8",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "middleware.js",
+      "longName": "src/middleware/middleware.js",
+      "path": "src/middleware/middleware.js"
+    },
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment:src/services/service.js",
+      "uuid": "AZzqnAYht5t5DmIVhhow",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "service.js",
+      "longName": "src/services/service.js",
+      "path": "src/services/service.js"
+    },
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment:src/utils/env.js",
+      "uuid": "AZzqnAYht5t5DmIVhho5",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "env.js",
+      "longName": "src/utils/env.js",
+      "path": "src/utils/env.js"
+    },
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment:src/utils/helper.js",
+      "uuid": "AZzqnAYht5t5DmIVhho0",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "helper.js",
+      "longName": "src/utils/helper.js",
+      "path": "src/utils/helper.js"
+    },
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment:src/grpc/interceptor/userMetadata.js",
+      "uuid": "AZzqnAYht5t5DmIVhhpA",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "userMetadata.js",
+      "longName": "src/grpc/interceptor/userMetadata.js",
+      "path": "src/grpc/interceptor/userMetadata.js"
+    },
+    {
+      "organization": "aurify-backend",
+      "key": "aurify-backend_Aurify-Investment:src/grpc/server/server.js",
+      "uuid": "AZzqnAYht5t5DmIVhho-",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "server.js",
+      "longName": "src/grpc/server/server.js",
+      "path": "src/grpc/server/server.js"
+    }
+  ],
+  "organizations": [
+    {
+      "key": "aurify-backend",
+      "name": "Aurify Backend"
+    }
+  ],
+  "facets": []
+}
