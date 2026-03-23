@@ -7,7 +7,7 @@ export const validate = (schema, request) => {
   });
   if (result.error) {
     logger.debug(result.error.message);
-    throw new Error(400, result.error.message);
+    throw new Error(result.error.message);
   } else {
     return result.value;
   }

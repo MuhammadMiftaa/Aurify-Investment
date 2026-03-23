@@ -19,7 +19,7 @@ import {
   newInvestmentValidation,
   sellInvestmentValidation,
 } from "../validation/validation.js";
-import https from "https";
+import https from "node:https";
 
 const investmentList = () => {
   return prismaClient.investment.findMany({
@@ -32,6 +32,13 @@ const userInvestmentList = (userID) => {
   return prismaClient.investment.findMany({
     where: { userId: userID, quantity: { gt: 0 }, deletedAt: null },
     include: { assetCode: true },
+  });
+};
+
+const userSoldList = (userID) => {
+  return prismaClient.investmentSold.findMany({
+    where: { userId: userID, deletedAt: null },
+    include: { investment: { include: { assetCode: true } } },
   });
 };
 
@@ -221,7 +228,8 @@ const assetList = () => {
   });
 };
 
-const assetRefresh = async (apiKey, baseCurrency = "USD", currencies) => {
+// Default parameters placed last (currencies, retries have defaults after required params)
+const assetRefresh = async (apiKey, baseCurrency = "USD", currencies = "") => {
   const base = baseCurrency.toUpperCase();
 
   if (!validBaseCurrencies.includes(base)) {
@@ -320,6 +328,7 @@ const assetCodeDelete = async (code) => {
 export default {
   investmentList,
   userInvestmentList,
+  userSoldList,
   investmentDetail,
   investmentCreate,
   investmentSell,

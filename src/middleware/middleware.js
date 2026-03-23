@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { ERROR_MESSAGES } from "../utils/constant.js";
 import logger from "../utils/logger.js";
 import {
@@ -41,9 +41,9 @@ export function requestLogger(req, res, next) {
       client_ip: req.ip,
       user_agent: req.headers["user-agent"] || "",
       request_size: req.headers["content-length"]
-        ? parseInt(req.headers["content-length"], 10)
+        ? Number.parseInt(req.headers["content-length"], 10)
         : 0,
-      response_size: parseInt(res.getHeader("content-length") || "0", 10),
+      response_size: Number.parseInt(res.getHeader("content-length") || "0", 10),
       protocol: req.protocol,
     };
 

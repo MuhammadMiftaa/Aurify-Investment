@@ -37,8 +37,6 @@ import {
   unaryServerInterceptor,
   serverStreamInterceptor,
   logFieldsFromCall,
-  CTX_USER_ID,
-  CTX_REQUEST_ID,
 } from "../interceptor/userMetadata.js";
 
 const igrpc = igrpcModule.InvestmentServiceService || igrpcModule;
@@ -462,8 +460,15 @@ class InvestmentServiceImpl {
       const totalProfitLossPct =
         totalInvested > 0 ? (totalProfitLoss / totalInvested) * 100 : 0;
 
-      // Get sold records summary (simplified – count from DB if needed)
-      // For now, we calculate from the investment list
+      const soldRecords = await service.userSoldList(userId);
+      const totalSoldAmount = soldRecords.reduce(
+        (acc, s) => acc + Number(s.amount),
+        0,
+      );
+      const totalRealizedGain = soldRecords.reduce(
+        (acc, s) => acc + Number(s.deficit || 0) * Number(s.quantity || 0),
+        0,
+      );
 
       const resp = new ipb.InvestmentSummaryResponse();
       resp.setTotalInvestments(investments.length);
@@ -471,8 +476,8 @@ class InvestmentServiceImpl {
       resp.setTotalCurrentValue(totalCurrentValue);
       resp.setTotalProfitLoss(totalProfitLoss);
       resp.setTotalProfitLossPct(totalProfitLossPct);
-      resp.setTotalSoldAmount(0); // TODO: aggregate from sold records
-      resp.setTotalRealizedGain(0); // TODO: aggregate from sold records
+      resp.setTotalSoldAmount(totalSoldAmount);
+      resp.setTotalRealizedGain(totalRealizedGain);
 
       logger.info(LogGetInvestmentSummaryCompleted, {
         ...lf,

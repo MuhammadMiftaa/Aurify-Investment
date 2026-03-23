@@ -1,4 +1,4 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import logger from "../../utils/logger.js";
 import { GRPCServerService, REQUEST_ID_LOCAL_KEY } from "../../utils/log.js";
 
